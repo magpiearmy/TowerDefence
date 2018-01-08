@@ -30,7 +30,7 @@ public class ImageStore
 	public String loadImage(String relFilepath)
 	{
 		BufferedImage img;
-		String key = relFilepath;//.hashCode();
+		String key = relFilepath;
 		StringBuilder fullPath = new StringBuilder();
 		fullPath.append(_resDir).append(relFilepath);
 		

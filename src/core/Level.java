@@ -59,7 +59,6 @@ public class Level
 		_mapLoader = new MapLoader("Level_0.txt");
 	}
 
-	// Init
 	public void init(Shop shop)
 	{
 		_shop = shop;
@@ -90,8 +89,8 @@ public class Level
 
 		// TODO This code should be part of a separate resource manager
 		// Load the necessary textures into memory
-		_grassImg = _imgs.loadImage("grass.png");
-		_pathImg = _imgs.loadImage("path.png");
+//		_grassImg = _imgs.loadImage("grass.png");
+//		_pathImg = _imgs.loadImage("path.png");
 		_tower1Img = _imgs.loadImage("tower1.png");
 		_tower2Img = _imgs.loadImage("tower2.png");
 		_tower3Img = _imgs.loadImage("tower3.png");
@@ -228,14 +227,7 @@ public class Level
 			return;
 
 		/* First, do some end-game checks */
-		if (_livesRemaining <= 0)
-		{
-			// TODO Player lose
-		}
-		else if (_enemies.size() == 0)
-		{
-			// TODO Player win
-		}
+		checkForEndGame();
 
 		_spawner.update(elapsed);
 
@@ -275,6 +267,17 @@ public class Level
 				_enemies.remove(thisEnemy);
 				_livesRemaining -= thisEnemy.getEscapeCost();
 			}
+		}
+	}
+
+	private void checkForEndGame() {
+		if (_livesRemaining <= 0)
+		{
+			// TODO Player lose
+		}
+		else if (_enemies.size() == 0)
+		{
+			// TODO Player win
 		}
 	}
 

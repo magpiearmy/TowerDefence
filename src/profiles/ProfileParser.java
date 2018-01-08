@@ -1,6 +1,7 @@
 package profiles;
 
 import java.io.File;
+import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,11 +15,11 @@ import core.EnemyFactory;
 
 public class ProfileParser
 {
-	private static final String PROFILE_PATH = "Res\\SpawnProfiles\\";
-	private EnemyFactory _factory;
+	private static final String PROFILE_PATH = "/SpawnProfiles/";
+	private EnemyFactory factory;
 	
 	public ProfileParser(EnemyFactory factory) {
-		_factory = factory;
+		this.factory = factory;
 	}
 	
 	public SpawnProfile parse(String filepath)
@@ -26,10 +27,10 @@ public class ProfileParser
 		SpawnProfile profile = new SpawnProfile();
 		try
 		{
-			File fXmlFile = new File(PROFILE_PATH + filepath);
+			InputStream xmlInputStream = getClass().getResourceAsStream(PROFILE_PATH + filepath);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);
+			Document doc = dBuilder.parse(xmlInputStream);
 			
 			NodeList nList = doc.getElementsByTagName("*");
 			
@@ -57,7 +58,7 @@ public class ProfileParser
 			int enemyCount = Integer.parseInt( attributes.getNamedItem("enemyCount").getTextContent() );
 			int interval = Integer.parseInt( attributes.getNamedItem("interval").getTextContent() );
 			int delay = Integer.parseInt( attributes.getNamedItem("delay").getTextContent() );
-			return new WaveCommand(enemyCount, delay, interval, _factory);
+			return new WaveCommand(enemyCount, delay, interval, factory);
 		}
 		else if (node.getNodeName().equals("delay"))
 		{

@@ -24,16 +24,16 @@ public class ParticleEmitter {
 		_owningTower = owningTower;
 		_particles = new Vector<StreamParticle>();
 		
-		ImageStore imgs = ImageStore.get();
+		ImageStore images = ImageStore.get();
 
 		// Load the texture based on the element type
 		DualElementType dualType = element.getDualType();
 		if (dualType != null) {
 			
 			switch(dualType) {
-			case LAVA:	_imgId = imgs.loadImage("particle_lava.png"); break;
-			case STEAM:	_imgId = imgs.loadImage("particle_steam.png"); break;
-			case MUD: 	_imgId = imgs.loadImage("particle_mud.png"); break;
+			case LAVA:	_imgId = images.loadImage("particle_lava.png"); break;
+			case STEAM:	_imgId = images.loadImage("particle_steam.png"); break;
+			case MUD: 	_imgId = images.loadImage("particle_mud.png"); break;
 			}
 			
 		} else { // No dual-type so check for basic type
@@ -41,9 +41,9 @@ public class ParticleEmitter {
 			BasicElementType basicType = element.getBasicType();
 			if (basicType != null) {
 				switch (basicType) {
-				case FIRE:	_imgId = imgs.loadImage("particle_flame.png"); break;
-				case WATER:	_imgId = imgs.loadImage("particle_water.png"); break;
-				case EARTH:	_imgId = imgs.loadImage("particle_earth.png"); break;
+				case FIRE:	_imgId = images.loadImage("particle_flame.png"); break;
+				case WATER:	_imgId = images.loadImage("particle_water.png"); break;
+				case EARTH:	_imgId = images.loadImage("particle_earth.png"); break;
 				}
 			}
 		}
