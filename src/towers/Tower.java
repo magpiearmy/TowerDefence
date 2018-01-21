@@ -11,7 +11,7 @@ import core.Tile;
 @SuppressWarnings("serial")
 public class Tower extends Tile implements ISelectable {
 
-	protected TowerElement	_elements = new TowerElement();
+	protected ElementProperties _elements = new ElementProperties();
 	protected Circle		_fireRadius;
 	protected int			_cost		= 0;
 

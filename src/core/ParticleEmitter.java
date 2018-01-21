@@ -5,9 +5,9 @@ import java.awt.Point;
 import java.util.Vector;
 
 import towers.BasicElementType;
-import towers.DualElementType;
+import towers.CompoundElementType;
 import towers.RayTower;
-import towers.TowerElement;
+import towers.ElementProperties;
 
 public class ParticleEmitter {
 
@@ -19,7 +19,7 @@ public class ParticleEmitter {
 	final int _rate = 70;
 	int _elapsed = 0;
 
-	public ParticleEmitter(Point pos, RayTower owningTower, TowerElement element) {
+	public ParticleEmitter(Point pos, RayTower owningTower, ElementProperties element) {
 		_pos = pos;
 		_owningTower = owningTower;
 		_particles = new Vector<StreamParticle>();
@@ -27,7 +27,7 @@ public class ParticleEmitter {
 		ImageStore images = ImageStore.get();
 
 		// Load the texture based on the element type
-		DualElementType dualType = element.getDualType();
+		CompoundElementType dualType = element.getCompoundType();
 		if (dualType != null) {
 			
 			switch(dualType) {

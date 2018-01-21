@@ -1,6 +1,6 @@
 package towers;
 
-public enum DualElementType {
+public enum CompoundElementType {
 	LAVA,	// FIRE + EARTH
 	STEAM,	// FIRE + WATER
 	MUD		// WATER + EARTH
