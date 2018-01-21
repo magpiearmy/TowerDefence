@@ -5,61 +5,61 @@ import java.util.Vector;
 public class Map {
 
 	// Raw map data
-	private int			_data[][];
+	private int data[][];
 
 	// Path and waypoints
-	private Vector<Vector2D>	_path;
-	private Vector<Vector2D>	_waypoints;
+	private Vector<Vector2D> path;
+	private Vector<Vector2D> waypoints;
 	
-	private Vector2D	_start;
-	private Vector2D	_end;
-	private final int	_width;
-	private final int	_height;
+	private Vector2D start;
+	private Vector2D end;
+	private final int width;
+	private final int height;
 
 	public Map(int data[][], Vector2D start, Vector2D end) {
-		_data = data;
-		_width = _data[0].length;
-		_height = _data.length;
+		this.data = data;
+		width = this.data[0].length;
+		height = this.data.length;
 		
-		_start = start;
-		_end = end;
+		this.start = start;
+		this.end = end;
 	}
 
 	public int getTile(int x, int y) {
-		return _data[y][x];
+		return data[y][x];
 	}
 
 	public Vector2D getStart() {
-		return _start;
+		return start;
 	}
 
 	public Vector2D getEnd() {
-		return _end;
+		return end;
 	}
 
 	public int getWidth() {
-		return _width;
+		return width;
 	}
 
 	public int getHeight() {
-		return _height;
+		return height;
 	}
 	
 	public Vector<Vector2D> getWaypoints() {
-		return _waypoints;
+		return waypoints;
 	}
 	
 	public void loadPath() {
-		_path = new Vector<Vector2D>();
-		_waypoints = new Vector<Vector2D>();
+		path = new Vector<Vector2D>();
+		waypoints = new Vector<Vector2D>();
 
 		// First, find the coords of all path tiles
-		for (int y = 0; y < _height; y++)
+		for (int y = 0; y < height; y++)
 		{
-			for (int x = 0; x < _width; x++)
+			for (int x = 0; x < width; x++)
 			{
 				if (getTile(x, y) == 1)
-					_path.add(new Vector2D(x, y));
+					path.add(new Vector2D(x, y));
 			}
 		}
 
@@ -68,7 +68,7 @@ public class Map {
 		boolean pathComplete = false;
 		boolean changedDirection = false;
 		int dir = Direction.RIGHT;
-		Vector2D currentTile = _start;
+		Vector2D currentTile = start;
 		while (!pathComplete)
 		{
 			// Get the next tile in the current direction
@@ -78,14 +78,14 @@ public class Map {
 			int tilesWalked = 0;
 			
 			// Check if this next tile is part of the path
-			while (!foundNext && tilesWalked < _path.size())
+			while (!foundNext && tilesWalked < path.size())
 			{
-				for (int i = 0; i < _path.size(); i++)
+				for (int i = 0; i < path.size(); i++)
 				{
-					if (_path.elementAt(i).compareTo(nextTile))
+					if (path.elementAt(i).compareTo(nextTile))
 					{
 						foundNext = true;
-						_path.remove(i);
+						path.remove(i);
 						break;
 					}
 				}
@@ -95,7 +95,7 @@ public class Map {
 			if (!foundNext) // We didn't find a path tile in the current direction
 			{
 				// Check if we are already at the end
-				if (currentTile.compareTo(_end))
+				if (currentTile.compareTo(end))
 				{
 					addWaypoint(getNextTilePos(currentTile, dir));
 					pathComplete = true;
@@ -127,7 +127,7 @@ public class Map {
 	{
 		point.x = (point.x * Tile.WIDTH) + (Tile.WIDTH / 2);
 		point.y = (point.y * Tile.HEIGHT) + (Tile.HEIGHT / 2);
-		_waypoints.add(point);
+		waypoints.add(point);
 	}
 	
 	/**

@@ -26,21 +26,21 @@ public class GameScreen extends JPanel implements Runnable {
 	private Level 	_level;
 	private int 	_levelDrawOffsetX = 0;
 	private int 	_levelDrawOffsetY = 0;
-	private Shop 	_shop;
+	private Shop shop;
 	private int		_mouseX;
 	private int 	_mouseY;
 	
 	public GameScreen()
 	{
 		_level = new Level(this);
-		_shop = new Shop(900, _level);
+		shop = new Shop(900, _level);
 		setBackground( new Color(20,60,90) );
 		setFocusable(true);
 	}
 	
 	public void init()
 	{
-		_level.init(_shop);
+		_level.init(shop);
 		
 		addMouseListener( new MouseListener() {
 			public void mousePressed(MouseEvent e)
@@ -52,12 +52,12 @@ public class GameScreen extends JPanel implements Runnable {
 					e.translatePoint(-_levelDrawOffsetX, -_levelDrawOffsetY);
 					
 					// Notify the level of the click
-					_level.notifyMouse(e);
+					_level.handleMouseEvent(e);
 					e.consume();
 				
 				} else {
 					// Click was outside the level so let the shop handle it
-					_shop.handleMouseClick(e);
+					shop.handleMouseClick(e);
 				}
 			}
 			public void mouseClicked(MouseEvent e) {}			
@@ -73,7 +73,7 @@ public class GameScreen extends JPanel implements Runnable {
 			{
 				_mouseX = e.getX();
 				_mouseY = e.getY();
-				_shop.handleMouseMove(e);
+				shop.handleMouseMove(e);
 			}			
 		});
 		
@@ -83,7 +83,7 @@ public class GameScreen extends JPanel implements Runnable {
 		getActionMap().put("pressedNumber", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				_shop.selectItem(Integer.parseInt(arg0.getActionCommand()) - 1);
+				shop.selectItemByIndex(Integer.parseInt(arg0.getActionCommand()) - 1);
 			};
 		
 		});
@@ -126,16 +126,13 @@ public class GameScreen extends JPanel implements Runnable {
 		g2d.drawImage(infoboxCanvas, null, _levelDrawOffsetX + levelWidth - infoboxCanvas.getWidth(), 520);
 		
 		// Draw the shop
-		_shop.draw(g2d);
-		
-		// Finally, draw any currently held item
-		if (_shop.getHeldItem() != -1)
-		{
-			Image img = _shop.getImageOfHeldItem();
-			int drawX = _mouseX - img.getWidth(null)/2;
-			int drawY = _mouseY - img.getHeight(null)/2;
+		shop.draw(g2d);
+		shop.getHeldItem().ifPresent(towerType -> {
+			Image img = shop.getImageOfHeldItem();
+			int drawX = _mouseX - img.getWidth(null) / 2;
+			int drawY = _mouseY - img.getHeight(null) / 2;
 			g2d.drawImage(img, drawX, drawY, null);
-		}		
+		});
 	}
 
 	@Override

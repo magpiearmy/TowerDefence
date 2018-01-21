@@ -6,27 +6,52 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import java.util.Vector;
+import java.util.*;
 
 import core.ImageStore;
 import core.Level;
 import core.Tile;
+import towers.Tower;
+import towers.TowerType;
 
 public class Shop {
+
+    private class Button {
+        public Rectangle rect;
+        public String imageId;
+
+        public Button(String imageId) {
+            this.imageId = imageId;
+        }
+
+        public void setRect(Rectangle rect) {
+            this.rect = rect;
+        }
+    }
+
+    private class ShopItem {
+        public TowerType type;
+        public Button button;
+
+        public ShopItem(TowerType type, Button button) {
+            this.type = type;
+            this.button = button;
+        }
+    }
 
     public static final int BUTTON_MARGIN = 5;
     public static final int BUTTON_SIZE = Tile.WIDTH + (BUTTON_MARGIN * 2);
 
     private int screenWidth;
-    private Vector<Rectangle> buttons; // The bounds of all buttons
-    private int highlightedButton = -1; // Array index of highlighted button
-    private int heldItemIndex = -1; // Array index of the currently held item
+    private Map<TowerType, Button> towerButtons;
+    private List<Button> allButtons = new ArrayList<>();
+    private Rectangle highlightedButton;
+    private TowerType heldItem;
     private Rectangle startButton;
+    private String startButtonImageId;
     private Level level;
 
-    private ImageStore imgs;
-    private Vector<Integer> items; // Shop objects
-    private Vector<String> images; // Shop object images
+    private ImageStore imageStore;
 
     enum ShopState {IDLE, HOLDING_ITEM, PLACED_ITEM}
 
@@ -35,153 +60,165 @@ public class Shop {
 
     public Shop(int screenWidth, Level level) {
         this.screenWidth = screenWidth;
-        buttons = new Vector<Rectangle>();
-        items = new Vector<Integer>();
-        images = new Vector<String>();
-        startButton = new Rectangle(24, 510, BUTTON_SIZE, BUTTON_SIZE);
         this.level = level;
+        towerButtons = new HashMap<>();
+        startButton = new Rectangle(24, 510, BUTTON_SIZE, BUTTON_SIZE);
     }
 
-    public void addItem(String imgId) {
-        items.add(items.size() + 1);
-        images.add(imgId);
+    public void addItem(String imageId, TowerType towerType) {
+        towerButtons.put(towerType, new Button(imageId));
     }
 
     public void setImageStore(ImageStore imgs) {
-        this.imgs = imgs;
+        this.imageStore = imgs;
     }
 
     public void construct() {
         final int buttonSpacing = 10;
         final int sizePlusSpacing = BUTTON_SIZE + buttonSpacing;
-        int xOffset = (screenWidth - (items.size() * sizePlusSpacing)) / 2;
+        int xOffset = (screenWidth - (towerButtons.size() * sizePlusSpacing)) / 2;
 
-        for (int i = 0; i < items.size(); i++) {
-            buttons.add(new Rectangle(i * sizePlusSpacing + xOffset, 510, BUTTON_SIZE, BUTTON_SIZE));
-        }
+        towerButtons.forEach((type, button) -> {
+            Rectangle rect = new Rectangle(towerCount++ * sizePlusSpacing + xOffset, 510, BUTTON_SIZE, BUTTON_SIZE);
+            button.setRect(rect);
+            allButtons.add(newButton);
+        });
 
-        String startId = imgs.loadImage("start.png");
-        images.add(startId);
-        buttons.add(startButton);
+        startButtonImageId = imageStore.loadImage("start.png");
+        allButtons.add(new Button());
     }
 
     public Image getImageOfHeldItem() {
-        if (heldItemIndex == -1) return null;
-        else {
-            return imgs.getImage(images.elementAt(heldItemIndex));
+        if (!Optional.ofNullable(heldItem).isPresent()) {
+            return null;
+        } else {
+            return imageStore.getImage(imageIds.get(items.indexOf(heldItem)));
         }
     }
 
-    public int getHeldItem() {
+    public Optional<TowerType> getHeldItem() {
         if (state == ShopState.HOLDING_ITEM) {
-            return items.elementAt(heldItemIndex);
-        } else
-            return -1;
+            return Optional.ofNullable(heldItem);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public void clearHeldItem() {
         state = ShopState.IDLE;
-        heldItemIndex = -1;
+        heldItem = null;
     }
 
     public void handleMouseClick(MouseEvent e) {
-        int mx = e.getX();
-        int my = e.getY();
-        Point clickPt = new Point(mx, my);
+        final Point clickPt = new Point(e.getX(), e.getY());
 
         switch (state) {
             case HOLDING_ITEM:
-
-                boolean clearItem = true;
-
-                // Check if the user clicked a shop item
-                for (int i = 0; i < buttons.size(); i++) {
-                    if (buttons.elementAt(i).contains(clickPt)) {
-                        heldItemIndex = i;
-                        clearItem = false;
-                        break;
-                    }
-                }
-
-                if (clearItem) {
-                    clearHeldItem();
-                }
+                handleClickWhenHoldingItem(clickPt);
                 break;
-
-
             case IDLE:
-
-                for (int i = 0; i < buttons.size(); i++) {
-                    Rectangle thisButton = buttons.elementAt(i);
-                    if (thisButton.contains(clickPt)) {
-                        if (thisButton == startButton) {
-                            if (!level.isStarted())
-                                level.start();
-                            return;
-                        } else {
-                            state = ShopState.HOLDING_ITEM;
-                            heldItemIndex = i;
-                            return;
-                        }
-                    }
-                }
+                handleClickWhenIdle(clickPt);
                 break;
-
             default:
                 break;
         }
     }
 
-    public void handleMouseMove(MouseEvent e) {
-        int mx = e.getX();
-        int my = e.getY();
+    private void handleClickWhenHoldingItem(Point clickPt) {
+        boolean clearItem = towerButtons.entrySet().stream()
+                .filter(entry -> entry.getValue().contains(clickPt))
+                .findFirst()
+                .map(entry -> {
+                    heldItem = entry.getKey();
+                    return false;
+                }).orElse(true);
 
-        for (int i = 0; i < buttons.size(); i++) {
-            if (buttons.elementAt(i).contains(new Point(mx, my))) {
-                highlightedButton = i;
-                return;
-            }
+        if (clearItem) {
+            clearHeldItem();
         }
-        highlightedButton = -1;
     }
 
-    public void selectItem(int idx) {
+    private void handleClickWhenIdle(Point clickPt) {
+        towerButtons.entrySet().stream()
+                .filter(entry -> entry.getValue().contains(clickPt))
+                .findFirst()
+                .ifPresent(entry -> {
+                    if (entry.getValue() == startButton) {
+                        if (!level.isStarted())
+                            level.start();
+                    } else {
+                        state = ShopState.HOLDING_ITEM;
+                        heldItem = entry.getKey();
+                    }
+                });
+    }
+
+    public void handleMouseMove(MouseEvent e) {
+        final Point clickPt = new Point(e.getX(), e.getY());
+        highlightedButton = towerButtons.values().stream()
+                .filter(button -> button.contains(clickPt))
+                .findFirst()
+                .orElseGet(() -> {
+                    if (startButton.contains(clickPt))
+                        return startButton;
+                    else
+                        return null;
+                });
+    }
+
+    public void selectItemByIndex(int idx) {
         state = ShopState.HOLDING_ITEM;
-        heldItemIndex = idx;
+        heldItem = items.get(idx);
     }
 
     public void draw(Graphics2D g) {
-        for (int i = 0; i < buttons.size(); i++) {
-            Rectangle thisButton = buttons.elementAt(i);
-            Image img = imgs.getImage(images.elementAt(i));
+        towerButtons.forEach((type, button) -> {
 
-            if (thisButton == startButton && level.isStarted())
-                g.setColor(new Color(50, 50, 50));
-            else if (i == highlightedButton)
+            if (button == highlightedButton) {
                 g.setColor(new Color(130, 130, 140));
-            else
+            } else {
                 g.setColor(new Color(100, 100, 100));
+            }
 
-            g.fillRoundRect(thisButton.x,
-                    thisButton.y,
-                    thisButton.width,
-                    thisButton.height,
-                    6,
-                    6);
-            g.drawImage(img,
-                    thisButton.x + BUTTON_MARGIN,
-                    thisButton.y + BUTTON_MARGIN,
-                    null);
+            if (button != startButton)
+                drawButton(g, button, imageIds.get(items.indexOf(type)));
+        });
 
-            g.setColor(new Color(200, 200, 200));
+        drawStartButton(g);
+    }
 
-            g.drawRoundRect(thisButton.x,
-                    thisButton.y,
-                    thisButton.width,
-                    thisButton.height,
-                    6,
-                    6);
+    private void drawStartButton(Graphics2D g) {
+        if (level.isStarted()) {
+            g.setColor(new Color(50, 50, 50));
+        } else {
+            g.setColor(new Color(100, 100, 100));
         }
+
+        drawButton(g, startButton, startButtonImageId);
+    }
+
+    private void drawButton(Graphics2D g, Rectangle button, String imageId) {
+        g.fillRoundRect(button.x,
+                button.y,
+                button.width,
+                button.height,
+                6,
+                6);
+
+        Image img = imageStore.getImage(imageId);
+        g.drawImage(img,
+                button.x + BUTTON_MARGIN,
+                button.y + BUTTON_MARGIN,
+                null);
+
+
+        g.setColor(new Color(200, 200, 200));
+        g.drawRoundRect(button.x,
+                button.y,
+                button.width,
+                button.height,
+                6,
+                6);
     }
 
 }
