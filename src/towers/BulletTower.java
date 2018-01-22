@@ -46,7 +46,7 @@ public class BulletTower extends Tower {
 				Enemy enemy = enemies.elementAt(i);
 				Point enemyCenter = new Point((int) enemy.getCenterX(), (int) enemy.getCenterY());
 
-				if (enemy.isAlive() && _fireRadius.contains(enemyCenter)) {
+				if (enemy.isAlive() && fireRadius.contains(enemyCenter)) {
 					_timeSinceFired = 0;
 
 					// Create a bullet

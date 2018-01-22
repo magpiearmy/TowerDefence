@@ -38,7 +38,7 @@ public class AreaTower extends Tower
 			if (thisEnemy.isAlive())
 			{
 				Point enemyCenter = new Point( (int) thisEnemy.getCenterX(), (int) thisEnemy.getCenterY());
-				if (_fireRadius.contains(enemyCenter))
+				if (fireRadius.contains(enemyCenter))
 				{
 					_drawTime = 80;
 					_timeSinceFired = 0;
@@ -55,8 +55,8 @@ public class AreaTower extends Tower
 		if (_drawTime > 0)
 		{
 			gfx.setColor(new Color(200, 200, 200, 120));
-			gfx.fillOval(_fireRadius.getBoundsX(), _fireRadius.getBoundsY(),
-					_fireRadius.getRadius() * 2, _fireRadius.getRadius() * 2);
+			gfx.fillOval(fireRadius.getBoundsX(), fireRadius.getBoundsY(),
+					fireRadius.getRadius() * 2, fireRadius.getRadius() * 2);
 		}
 	}
 }

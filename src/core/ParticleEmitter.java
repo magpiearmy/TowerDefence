@@ -11,18 +11,18 @@ import towers.ElementProperties;
 
 public class ParticleEmitter {
 
-	private String _imgId;
-	private Point _pos;
-	private Vector<StreamParticle> _particles;
-	private RayTower _owningTower;
+	private String imgId;
+	private Point pos;
+	private Vector<StreamParticle> particles;
+	private RayTower owningTower;
 	
-	final int _rate = 70;
-	int _elapsed = 0;
+	final int rate = 70;
+	int elapsed = 0;
 
 	public ParticleEmitter(Point pos, RayTower owningTower, ElementProperties element) {
-		_pos = pos;
-		_owningTower = owningTower;
-		_particles = new Vector<StreamParticle>();
+		this.pos = pos;
+		this.owningTower = owningTower;
+		particles = new Vector<>();
 		
 		ImageStore images = ImageStore.get();
 
@@ -31,9 +31,9 @@ public class ParticleEmitter {
 		if (dualType != null) {
 			
 			switch(dualType) {
-			case LAVA:	_imgId = images.loadImage("particle_lava.png"); break;
-			case STEAM:	_imgId = images.loadImage("particle_steam.png"); break;
-			case MUD: 	_imgId = images.loadImage("particle_mud.png"); break;
+			case LAVA:	imgId = images.loadImage("particle_lava.png"); break;
+			case STEAM:	imgId = images.loadImage("particle_steam.png"); break;
+			case MUD: 	imgId = images.loadImage("particle_mud.png"); break;
 			}
 			
 		} else { // No dual-type so check for basic type
@@ -41,43 +41,43 @@ public class ParticleEmitter {
 			BasicElementType basicType = element.getBasicType();
 			if (basicType != null) {
 				switch (basicType) {
-				case FIRE:	_imgId = images.loadImage("particle_flame.png"); break;
-				case WATER:	_imgId = images.loadImage("particle_water.png"); break;
-				case EARTH:	_imgId = images.loadImage("particle_earth.png"); break;
+				case FIRE:	imgId = images.loadImage("particle_flame.png"); break;
+				case WATER:	imgId = images.loadImage("particle_water.png"); break;
+				case EARTH:	imgId = images.loadImage("particle_earth.png"); break;
 				}
 			}
 		}
 	}
 	
 	public Point getPos() {
-		return _pos;
+		return pos;
 	}
 	
 	public void update(long elapsed) {
 		
 		// Update the particles
-		for (int i = 0; i < _particles.size(); i++) {
-			StreamParticle particle = _particles.elementAt(i);
+		for (int i = 0; i < particles.size(); i++) {
+			StreamParticle particle = particles.elementAt(i);
 			particle.update(elapsed);
 			if (particle.isDead())	
-				;//_particles.remove(i--);
+				;//particles.remove(i--);
 		}
 		
 		// Check to see if a new particle should be emitted
-		Enemy target = _owningTower.getEnemyTarget();
+		Enemy target = owningTower.getEnemyTarget();
 		if (target != null) {
-			_elapsed += elapsed;
-			if (_elapsed >= _rate) {
-				_elapsed -= _rate;
+			this.elapsed += elapsed;
+			if (this.elapsed >= rate) {
+				this.elapsed -= rate;
 				StreamParticle particle = new StreamParticle(this, target);
-				particle.init(_imgId);
-				_particles.add(particle);
+				particle.init(imgId);
+				particles.add(particle);
 			}
 		}
 	}
 	
 	public void drawParticles(Graphics2D gfx) {
-		for (StreamParticle particle : _particles) {
+		for (StreamParticle particle : particles) {
 			if (!particle.isDead())
 				particle.draw(gfx);
 		}

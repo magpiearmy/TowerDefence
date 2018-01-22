@@ -11,68 +11,68 @@ import core.Tile;
 @SuppressWarnings("serial")
 public class Tower extends Tile implements ISelectable {
 
-	protected ElementProperties _elements = new ElementProperties();
-	protected Circle		_fireRadius;
-	protected int			_cost		= 0;
+	protected ElementProperties elements = new ElementProperties();
+    protected Circle fireRadius;
+    protected int cost = 0;
 
-	protected boolean		_isSelected	= false;
+    protected boolean isSelected = false;
 
-	public Tower(int x, int y, int range) {
-		this.setBounds(x, y, Tile.WIDTH, Tile.HEIGHT);
-		_fireRadius = new Circle(x + Tile.WIDTH / 2, y + Tile.HEIGHT / 2, range);
-	}
-	
-	public void setCost(int cost) {
-		_cost = cost;
-	}
-	
-	public boolean isSelected() {
-		return _isSelected;
-	}
+    public Tower(int x, int y, int range) {
+        this.setBounds(x, y, Tile.WIDTH, Tile.HEIGHT);
+        fireRadius = new Circle(x + Tile.WIDTH / 2, y + Tile.HEIGHT / 2, range);
+    }
 
-	public int getPosX() {
-		return x;
-	}
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
 
-	public int getPosY() {
-		return y;
-	}
+    public boolean isSelected() {
+        return isSelected;
+    }
 
-	public Circle getFireRadius() {
-		return _fireRadius;
-	}
+    public int getPosX() {
+        return x;
+    }
 
-	public int getCost() {
-		return _cost;
-	}
+    public int getPosY() {
+        return y;
+    }
 
-	public void update(long elapsed) {
-	}
-	
-	public void addElement(BasicElementType type) {
-		_elements.addElement(type);
-	}
-	
-	public void draw(Graphics2D gfx) {
-		gfx.drawImage(_texture, x, y, null);
-	}
+    public Circle getFireRadius() {
+        return fireRadius;
+    }
 
-	public boolean fire(Vector<Enemy> enemies) {
-		return false;
-	}
+    public int getCost() {
+        return cost;
+    }
 
-	@Override
-	public void select() {
-		_isSelected = true;
-	}
+    public void update(long elapsed) {
+    }
 
-	@Override
-	public void deselect() {
-		_isSelected = false;
-	}
+    public void addElement(BasicElementType type) {
+        elements.addElement(type);
+    }
 
-	@Override
-	public boolean wasClicked(int clickX, int clickY) {
-		return this.contains(clickX, clickY);
-	}
+    public void draw(Graphics2D gfx) {
+        gfx.drawImage(_texture, x, y, null);
+    }
+
+    public boolean fire(Vector<Enemy> enemies) {
+        return false;
+    }
+
+    @Override
+    public void select() {
+        isSelected = true;
+    }
+
+    @Override
+    public void deselect() {
+        isSelected = false;
+    }
+
+    @Override
+    public boolean wasClicked(int clickX, int clickY) {
+        return this.contains(clickX, clickY);
+    }
 }

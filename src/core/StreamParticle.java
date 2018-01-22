@@ -5,75 +5,75 @@ import java.awt.Point;
 
 public class StreamParticle {
 
-	private ParticleEmitter _emitter;
+	private ParticleEmitter emitter;
 	
-	private Enemy 		_target;
-	private String		_imgId;
-	private boolean 	_isDead = false;
+	private Enemy target;
+	private String imgId;
+	private boolean isDead = false;
 
 	//TODO: Refactor to common class shared by this and Projectile
-	private Point _position;
-	private Point _lastTargetPos = null;
-	private Vector2D 	_size;
-	private double _speed;
-	private double _dirX = 0;
-	private double _dirY = 0;
-	private double _xOverflow = 0;
-	private double _yOverflow = 0;
+	private Point position;
+	private Point lastTargetPos = null;
+	private Vector2D size;
+	private double speed;
+	private double dirX = 0;
+	private double dirY = 0;
+	private double xOverflow = 0;
+	private double yOverflow = 0;
 	
-	public StreamParticle(ParticleEmitter emitter, Enemy enemyTarget) {
-		_emitter = emitter;
-		_position = new Point(_emitter.getPos());
-		_target = enemyTarget;
-		_speed = 220;
+	public StreamParticle(ParticleEmitter emitter, Enemy target) {
+		this.emitter = emitter;
+		this.target = target;
+		position = new Point(this.emitter.getPos());
+		speed = 220;
 	}
 	
 	public void init(String imgId) {
-		_imgId = imgId;
-		_size = new Vector2D(
-				ImageStore.get().getImage(_imgId).getWidth(null),
-				ImageStore.get().getImage(_imgId).getHeight(null));
+		this.imgId = imgId;
+		size = new Vector2D(
+				ImageStore.get().getImage(this.imgId).getWidth(null),
+				ImageStore.get().getImage(this.imgId).getHeight(null));
 	}
 	
 	public boolean isDead() {
-		return _isDead;
+		return isDead;
 	}
 	
 	public void update(long elapsed) {
 		
-		if (_isDead) return;
+		if (isDead) return;
 		
 		// Calculate the straight-line distance we can move this frame (distance = speed * time)
-		double distanceToMove = _speed * ((double) elapsed / 1000f);
+		double distanceToMove = speed * ((double) elapsed / 1000f);
 		
 		// Check if the target is already dead
-		if (_target == null || !_target.isAlive())
+		if (target == null || !target.isAlive())
 		{
 			// If we never had chance to move before our target died just kill the bullet
-			if ((_dirX == 0.0f && _dirY == 0.0f) || _lastTargetPos == null)
+			if ((dirX == 0.0f && dirY == 0.0f) || lastTargetPos == null)
 			{
-				_isDead = true;
+				isDead = true;
 				return;
 			}
 
-			moveTowardTarget(_lastTargetPos, distanceToMove);
-			if (_lastTargetPos.equals(_position)) {
-				_isDead = true;
+			moveTowardTarget(lastTargetPos, distanceToMove);
+			if (lastTargetPos.equals(position)) {
+				isDead = true;
 			}
 		}
 		else // Otherwise, head for the target
 		{
-			// Get latest _position of target
-			Point targetPos = new Point((int) _target.getCenterX(),
-					(int) _target.getCenterY());
+			// Get latest position of target
+			Point targetPos = new Point((int) target.getCenterX(),
+					(int) target.getCenterY());
 			
-			_lastTargetPos = targetPos;
+			lastTargetPos = targetPos;
 
 			moveTowardTarget(targetPos, distanceToMove);
 			
 			// Check if we've hit it this update
-			if (_target.getHitBox().contains(_position)) {
-				_isDead = true;
+			if (target.getHitBox().contains(position)) {
+				isDead = true;
 			}
 		}
 	}
@@ -83,39 +83,39 @@ public class StreamParticle {
 		// The distance to move along both axis
 		int moveX, moveY;
 		
-		double distanceToTarget = _position.distance(targetPos);
-		double dx = targetPos.x - _position.x;
-		double dy = targetPos.y - _position.y;
+		double distanceToTarget = position.distance(targetPos);
+		double dx = targetPos.x - position.x;
+		double dy = targetPos.y - position.y;
 		
 		if (distanceToMove > distanceToTarget)
 			distanceToMove = distanceToTarget;
 		
 		// Update the direction
-		_dirX = dx / distanceToTarget;
-		_dirY = dy / distanceToTarget;
+		dirX = dx / distanceToTarget;
+		dirY = dy / distanceToTarget;
 
 		// Calculate the distance to move
-		double actualMoveX = _dirX * distanceToMove;
-		double actualMoveY = _dirY * distanceToMove;
+		double actualMoveX = dirX * distanceToMove;
+		double actualMoveY = dirY * distanceToMove;
 
-		moveX = (int)Math.floor(actualMoveX + _xOverflow);
-		moveY = (int)Math.floor(actualMoveY + _yOverflow);
+		moveX = (int)Math.floor(actualMoveX + xOverflow);
+		moveY = (int)Math.floor(actualMoveY + yOverflow);
 
 		// When the distance to move this frame includes a fraction of one
 		// pixel, we can't represent that on screen so we accrue the
 		// move distance 'overflow' and move a full pixel when we've
 		// accrued enough.
-		_xOverflow += actualMoveX - (double)moveX;
-		_yOverflow += actualMoveY - (double)moveY;
+		xOverflow += actualMoveX - (double)moveX;
+		yOverflow += actualMoveY - (double)moveY;
 
 		// Move!
-		_position.translate(moveX, moveY);
+		position.translate(moveX, moveY);
 	}
 	
 	public void draw(Graphics2D gfx) {
-		if (_isDead) return;
-		int posX = _position.x - _size.x/2;
-		int posY = _position.y - _size.y/2;
-		gfx.drawImage(ImageStore.get().getImage(_imgId), posX, posY, null);
+		if (isDead) return;
+		int posX = position.x - size.x/2;
+		int posY = position.y - size.y/2;
+		gfx.drawImage(ImageStore.get().getImage(imgId), posX, posY, null);
 	}
 }
