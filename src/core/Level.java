@@ -1,21 +1,17 @@
 package core;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
-import javax.swing.JPanel;
-
 import profiles.ProfileParser;
 import towers.Tower;
 import towers.TowerFactory;
 import towers.TowerType;
 import ui.Shop;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 public class Level {
     // Level data
@@ -23,7 +19,6 @@ public class Level {
     private int towerMap[][];
     private Tile tiles[][];
     private Tile startTile;
-    private Vector<Vector2D> waypoints;
     private MapLoader mapLoader;
     private Shop shop;
     private final int tileSize;
@@ -49,7 +44,7 @@ public class Level {
 
     private Spawner spawner;
 
-    // Level-specific player data
+    // Player data
     private int livesRemaining;
     private int money;
 
@@ -102,7 +97,7 @@ public class Level {
         towerFactory = new TowerFactory(bulletManager);
 
         // Get the start positon from the map and get the corresponding tile
-        Vector2D startPos = map.getStart();
+        Point startPos = map.getStart();
         startTile = tiles[startPos.x][startPos.y];
 
         // Create enemy factory
@@ -149,8 +144,8 @@ public class Level {
         final int mx = e.getX();
         final int my = e.getY();
 
-        if (shop.getHeldItem().isPresent()) {
-            placeTower(mx, my, shop.getHeldItem().get());
+        if (shop.getHeldItemType().isPresent()) {
+            placeTower(mx, my, shop.getHeldItemType().get());
         } else {
             for (ISelectable clickable : clickables) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
@@ -170,8 +165,7 @@ public class Level {
         int mapX = towerX / Tile.WIDTH;
         int mapY = towerY / Tile.HEIGHT;
 
-        // Make sure there is no tower on this tile already
-        if (towerMap[mapX][mapY] == 0 && map.getTile(mapX, mapY) != 1) {
+        if (canPlaceTowerAtTile(mapX, mapY)) {
 
             shop.clearHeldItem();
 
@@ -188,6 +182,10 @@ public class Level {
                         + "] Funds [" + money + "]").toString());
             }
         }
+    }
+
+    private boolean canPlaceTowerAtTile(int mapX, int mapY) {
+        return (towerMap[mapX][mapY] == 0 && map.getTile(mapX, mapY) != 1);
     }
 
     /**
@@ -264,7 +262,7 @@ public class Level {
             for (int x = 0; x < widthInTiles; x++) {
                 Tile thisTile = tiles[x][y];
 
-                mapGfx.drawImage(imgs.getImage(thisTile._textureId), thisTile.x, thisTile.y, null);
+                mapGfx.drawImage(imgs.getImage(thisTile.textureId), thisTile.x, thisTile.y, null);
 
                 mapGfx.setColor(new Color(80, 120, 80));
                 mapGfx.drawRect(thisTile.x, thisTile.y, thisTile.width, thisTile.height);

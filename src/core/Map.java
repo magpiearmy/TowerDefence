@@ -1,5 +1,6 @@
 package core;
 
+import java.awt.*;
 import java.util.Vector;
 
 public class Map {
@@ -8,15 +9,15 @@ public class Map {
 	private int data[][];
 
 	// Path and waypoints
-	private Vector<Vector2D> path;
-	private Vector<Vector2D> waypoints;
+	private Vector<Point> path;
+	private Vector<Point> waypoints;
 	
-	private Vector2D start;
-	private Vector2D end;
+	private Point start;
+	private Point end;
 	private final int width;
 	private final int height;
 
-	public Map(int data[][], Vector2D start, Vector2D end) {
+	public 	Map(int data[][], Point start, Point end) {
 		this.data = data;
 		width = this.data[0].length;
 		height = this.data.length;
@@ -29,11 +30,11 @@ public class Map {
 		return data[y][x];
 	}
 
-	public Vector2D getStart() {
+	public Point getStart() {
 		return start;
 	}
 
-	public Vector2D getEnd() {
+	public Point getEnd() {
 		return end;
 	}
 
@@ -45,13 +46,13 @@ public class Map {
 		return height;
 	}
 	
-	public Vector<Vector2D> getWaypoints() {
+	public Vector<Point> getWaypoints() {
 		return waypoints;
 	}
 	
 	public void loadPath() {
-		path = new Vector<Vector2D>();
-		waypoints = new Vector<Vector2D>();
+		path = new Vector<>();
+		waypoints = new Vector<>();
 
 		// First, find the coords of all path tiles
 		for (int y = 0; y < height; y++)
@@ -59,7 +60,7 @@ public class Map {
 			for (int x = 0; x < width; x++)
 			{
 				if (getTile(x, y) == 1)
-					path.add(new Vector2D(x, y));
+					path.add(new Point(x, y));
 			}
 		}
 
@@ -68,11 +69,11 @@ public class Map {
 		boolean pathComplete = false;
 		boolean changedDirection = false;
 		int dir = Direction.RIGHT;
-		Vector2D currentTile = start;
+		Point currentTile = start;
 		while (!pathComplete)
 		{
 			// Get the next tile in the current direction
-			Vector2D nextTile = getNextTilePos(currentTile, dir);
+			Point nextTile = getNextTilePos(currentTile, dir);
 			
 			boolean foundNext = false;
 			int tilesWalked = 0;
@@ -82,7 +83,7 @@ public class Map {
 			{
 				for (int i = 0; i < path.size(); i++)
 				{
-					if (path.elementAt(i).compareTo(nextTile))
+					if (path.elementAt(i).equals(nextTile))
 					{
 						foundNext = true;
 						path.remove(i);
@@ -95,7 +96,7 @@ public class Map {
 			if (!foundNext) // We didn't find a path tile in the current direction
 			{
 				// Check if we are already at the end
-				if (currentTile.compareTo(end))
+				if (currentTile.equals(end))
 				{
 					addWaypoint(getNextTilePos(currentTile, dir));
 					pathComplete = true;
@@ -112,7 +113,7 @@ public class Map {
 				// If we had to change direction to find the next path tile, set a waypoint.
 				if (changedDirection)
 				{
-					addWaypoint(new Vector2D(currentTile.x, currentTile.y));
+					addWaypoint(new Point(currentTile.x, currentTile.y));
 					changedDirection = false;
 				}
 				
@@ -123,7 +124,7 @@ public class Map {
 		}
 	}
 
-	private void addWaypoint(Vector2D point)
+	private void addWaypoint(Point point)
 	{
 		point.x = (point.x * Tile.WIDTH) + (Tile.WIDTH / 2);
 		point.y = (point.y * Tile.HEIGHT) + (Tile.HEIGHT / 2);
@@ -138,18 +139,18 @@ public class Map {
 	 * @param dir
 	 * @return
 	 */
-	private Vector2D getNextTilePos(Vector2D current, int dir)
+	private Point getNextTilePos(Point current, int dir)
 	{
 		switch (dir)
 		{
 		case Direction.UP:
-			return new Vector2D(current.x, current.y - 1);
+			return new Point(current.x, current.y - 1);
 		case Direction.RIGHT:
-			return new Vector2D(current.x + 1, current.y);
+			return new Point(current.x + 1, current.y);
 		case Direction.DOWN:
-			return new Vector2D(current.x, current.y + 1);
+			return new Point(current.x, current.y + 1);
 		case Direction.LEFT:
-			return new Vector2D(current.x - 1, current.y);
+			return new Point(current.x - 1, current.y);
 		default:
 			return null; // shouldn't get here
 		}

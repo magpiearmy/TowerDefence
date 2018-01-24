@@ -1,6 +1,10 @@
 package core;
 
-import java.io.*;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Vector;
 
 public class MapLoader {
@@ -40,18 +44,18 @@ public class MapLoader {
         int mapHeight = stringMap.size();
         mapData = new int[mapHeight][mapWidth];
 
-        Vector2D start = null;
-        Vector2D end = null;
+        Point start = null;
+        Point end = null;
 
         // Go through the string map and build the actual map data
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
                 char ch = stringMap.elementAt(i).charAt(j);
                 if (ch == 'S') {
-                    start = new Vector2D(j, i);
+                    start = new Point(j, i);
                     mapData[i][j] = 1;
                 } else if (ch == 'E') {
-                    end = new Vector2D(j, i);
+                    end = new Point(j, i);
                     mapData[i][j] = 1;
                 } else {
                     mapData[i][j] = ch - '0';

@@ -1,25 +1,26 @@
 package core;
 
+import java.awt.*;
 import java.util.Vector;
 
 public class EnemyFactory
 {
-	private Vector2D _startPos;
-	private Vector<Vector2D> _waypoints;
+	private Point startPos;
+	private Vector<Point> waypoints;
 
-	private String _enemyImg;
-	private String _enemyDyingImg;
+	private String enemyImg;
+	private String enemyDyingImg;
 	
-	public EnemyFactory(Vector2D startPos, Vector<Vector2D> waypoints, ImageStore imgStore) {
-		_startPos = startPos;
-		_waypoints = waypoints;
-		_enemyImg = imgStore.loadImage("enemy1.png");
-		_enemyDyingImg = imgStore.loadImage("enemy2.png");
+	public EnemyFactory(Point startPos, Vector<Point> waypoints, ImageStore imgStore) {
+		this.startPos = startPos;
+		this.waypoints = waypoints;
+		enemyImg = imgStore.loadImage("enemy1.png");
+		enemyDyingImg = imgStore.loadImage("enemy2.png");
 	}
 	
 	public Enemy createEnemy(int enemyType) {
 		
-		Enemy enemy = new Enemy(_startPos, _waypoints, _enemyImg, _enemyDyingImg, 1);
+		Enemy enemy = new Enemy(startPos, waypoints, enemyImg, enemyDyingImg, 1);
 		return enemy;
 	}
 }

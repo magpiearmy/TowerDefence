@@ -7,14 +7,16 @@ public class TileFactory {
 	public static final String FILEPATH_GRASS = RESOURCE_DIRECTORY_PATH + "grass.png";
 	public static final String FILEPATH_PATH = RESOURCE_DIRECTORY_PATH + "path.png";	
 	
-	private static String _grassImg = null;
-	private static String _pathImg = null;
+	private static String grassImg = null;
+	private static String pathImg = null;
 	
-	private ImageStore _imgs;
+	private ImageStore imgs;
 	
 	public TileFactory(ImageStore imgs)
 	{
-		_imgs = imgs;
+		this.imgs = imgs;
+		grassImg = imgs.loadImage("grass.png");
+		pathImg = imgs.loadImage("path.png");
 	}
 	
 	public Tile createTile(int x, int y, int type)
@@ -25,13 +27,11 @@ public class TileFactory {
 		{
 		case 0:
 			newTile = new Tile(x * Tile.WIDTH, y * Tile.HEIGHT);
-			if (_grassImg == null) _grassImg = _imgs.loadImage("grass.png");
-			newTile.setTextureId(_grassImg);
+			newTile.setTextureId(grassImg);
 			break;
 		case 1:
 			newTile = new Tile(x * Tile.WIDTH, y * Tile.HEIGHT);
-			if (_pathImg == null) _pathImg = _imgs.loadImage("path.png");
-			newTile.setTextureId(_pathImg);
+			newTile.setTextureId(pathImg);
 			break;
 		}
 		

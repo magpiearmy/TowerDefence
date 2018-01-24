@@ -54,7 +54,7 @@ public class Tower extends Tile implements ISelectable {
     }
 
     public void draw(Graphics2D gfx) {
-        gfx.drawImage(_texture, x, y, null);
+        gfx.drawImage(texture, x, y, null);
     }
 
     public boolean fire(Vector<Enemy> enemies) {
