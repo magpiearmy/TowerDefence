@@ -8,7 +8,6 @@ public class Map {
 	// Raw map data
 	private int data[][];
 
-	// Path and waypoints
 	private Vector<Point> path;
 	private Vector<Point> waypoints;
 	

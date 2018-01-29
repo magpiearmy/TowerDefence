@@ -115,7 +115,6 @@ public class Level {
             try {
                 map = mapLoader.loadMap();
             } catch (Exception e) { //TODO: MapLoadException
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -177,7 +176,6 @@ public class Level {
                 clickables.add(newTower);
                 money -= cost;
             } else {
-                // TODO Notify that user cannot afford tower
                 System.out.println(new StringBuilder("Cannot afford that tower! Cost [" + cost
                         + "] Funds [" + money + "]").toString());
             }

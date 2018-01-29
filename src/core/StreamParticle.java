@@ -80,7 +80,7 @@ public class StreamParticle {
 	
 	private void moveTowardTarget(Point targetPos, double distanceToMove) {
 
-		// The distance to move along both axis
+		// The distance to move along both axes
 		int moveX, moveY;
 		
 		double distanceToTarget = position.distance(targetPos);
