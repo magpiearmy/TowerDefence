@@ -13,7 +13,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import ui.Shop;
+import ui.UserInterface;
 
 @SuppressWarnings("serial")
 public class GameScreen extends JPanel implements Runnable {
@@ -23,13 +23,13 @@ public class GameScreen extends JPanel implements Runnable {
     private Level level;
     private int levelDrawOffsetX = 0;
     private int levelDrawOffsetY = 0;
-    private Shop shop;
+    private UserInterface shop;
     private int mouseX;
     private int mouseY;
 
     public GameScreen() {
         level = new Level(this);
-        shop = new Shop(900, level);
+        shop = new UserInterface(900, level);
         setBackground(new Color(20, 60, 90));
         setFocusable(true);
     }
@@ -117,12 +117,7 @@ public class GameScreen extends JPanel implements Runnable {
         g2d.drawImage(infoboxCanvas, null, levelDrawOffsetX + levelWidth - infoboxCanvas.getWidth(), 520);
 
         // Draw the shop
-        shop.draw(g2d);
-        shop.getImageOfHeldItem().ifPresent(heldImage -> {
-            int drawX = mouseX - heldImage.getWidth(null) / 2;
-            int drawY = mouseY - heldImage.getHeight(null) / 2;
-            g2d.drawImage(heldImage, drawX, drawY, null);
-        });
+        shop.draw(g2d, mouseX, mouseY);
     }
 
     @Override

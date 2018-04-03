@@ -4,7 +4,7 @@ import profiles.ProfileParser;
 import towers.Tower;
 import towers.TowerFactory;
 import towers.TowerType;
-import ui.Shop;
+import ui.UserInterface;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,9 +18,8 @@ public class Level {
     private Map map;
     private int towerMap[][];
     private Tile tiles[][];
-    private Tile startTile;
     private MapLoader mapLoader;
-    private Shop shop;
+    private UserInterface shop;
     private final int tileSize;
     private int widthInTiles;
     private int heightInTiles;
@@ -53,28 +52,12 @@ public class Level {
         mapLoader = new MapLoader("Level_0.txt");
     }
 
-    public void init(Shop shop) {
+    public void init(UserInterface shop) {
         this.shop = shop;
 
-        // Build the Map from a map file
         loadMap();
-
-        // Now we can allocate and load the tile array
-        tiles = new Tile[widthInTiles][heightInTiles];
-        TileFactory tileFactory = new TileFactory(imgs);
-        for (int y = 0; y < heightInTiles; y++) {
-            for (int x = 0; x < widthInTiles; x++) {
-                tiles[x][y] = tileFactory.createTile(x, y, map.getTile(x, y));
-            }
-        }
-
-        // Default the tower map to zeros
-        towerMap = new int[widthInTiles][heightInTiles];
-        for (int y = 0; y < heightInTiles; y++) {
-            for (int x = 0; x < widthInTiles; x++) {
-                towerMap[x][y] = 0;
-            }
-        }
+        buildTileArray();
+        buildTowerArray();
 
         // TODO This code should be part of a separate resource manager
         // Load the necessary textures into memory
@@ -84,12 +67,7 @@ public class Level {
         tower2Img = imgs.loadImage("tower2.png");
         tower3Img = imgs.loadImage("tower3.png");
 
-        // Set up the shop images
-        shop.setImageStore(imgs);
-        shop.addItem(tower1Img, TowerType.PROJECTILE);
-        shop.addItem(tower2Img, TowerType.RAY);
-        shop.addItem(tower3Img, TowerType.AREA);
-        shop.construct();
+        setupShop(shop);
 
         // Create the bullet manager and tower factory
         bulletManager = new BulletManager(getWidthInPixels(), getHeightInPixels());
@@ -98,7 +76,7 @@ public class Level {
 
         // Get the start positon from the map and get the corresponding tile
         Point startPos = map.getStart();
-        startTile = tiles[startPos.x][startPos.y];
+        Tile startTile = tiles[startPos.x][startPos.y];
 
         // Create enemy factory
         EnemyFactory enemyFactory = new EnemyFactory(startTile.getCenter(), map.getWaypoints(), imgs);
@@ -108,6 +86,33 @@ public class Level {
 
         livesRemaining = 5;
         money = 300;
+    }
+
+    private void setupShop(UserInterface shop) {
+        shop.setImageStore(imgs);
+        shop.addTower(tower1Img, TowerType.PROJECTILE);
+        shop.addTower(tower2Img, TowerType.RAY);
+        shop.addTower(tower3Img, TowerType.AREA);
+        shop.construct();
+    }
+
+    private void buildTowerArray() {
+        towerMap = new int[widthInTiles][heightInTiles];
+        for (int y = 0; y < heightInTiles; y++) {
+            for (int x = 0; x < widthInTiles; x++) {
+                towerMap[x][y] = 0;
+            }
+        }
+    }
+
+    private void buildTileArray() {
+        tiles = new Tile[widthInTiles][heightInTiles];
+        TileFactory tileFactory = new TileFactory(imgs);
+        for (int y = 0; y < heightInTiles; y++) {
+            for (int x = 0; x < widthInTiles; x++) {
+                tiles[x][y] = tileFactory.createTile(x, y, map.getTile(x, y));
+            }
+        }
     }
 
     private void loadMap() {
@@ -133,6 +138,7 @@ public class Level {
 
     public void start() {
         started = true;
+        shop.onLevelStart();
     }
 
     public boolean isStarted() {
