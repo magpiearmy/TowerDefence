@@ -204,6 +204,38 @@ public class Level {
 		/* First, do some end-game checks */
         checkForEndGame();
 
+        updateEnemies(elapsed);
+        updateTowers(elapsed);
+        bulletManager.updateBullets(elapsed);
+
+        for (Enemy enemy: enemies) {
+            if (enemy.isDead()) {
+                onEnemyKilled(enemy);
+            } else if (enemy.hasEscaped()) {
+                onEnemyEscaped(enemy);
+            }
+        }
+    }
+
+    private void onEnemyEscaped(Enemy thisEnemy) {
+        enemies.remove(thisEnemy);
+        livesRemaining -= thisEnemy.getEscapeCost();
+    }
+
+    private void onEnemyKilled(Enemy thisEnemy) {
+        enemies.remove(thisEnemy);
+        bulletManager.onTargetKilled(thisEnemy);
+        money += thisEnemy.getYield();
+    }
+
+    private void updateTowers(long elapsed) {
+        for (Tower tower : towers) {
+            tower.update(elapsed); // Update the tower
+            tower.fire(enemies); // Allow towers to fire at a target
+        }
+    }
+
+    private void updateEnemies(long elapsed) {
         spawner.update(elapsed);
 
         if (spawner.hasSpawned()) {
@@ -213,44 +245,16 @@ public class Level {
         for (int i = 0; i < enemies.size(); i++) {
             enemies.elementAt(i).update(elapsed);
         }
-
-        // For each tower, check whether an enemy is in range
-        // and tell it to fire if necessary.
-        for (int i = 0; i < towers.size(); i++) {
-            Tower thisTower = towers.elementAt(i);
-
-            thisTower.update(elapsed); // Update the tower
-            thisTower.fire(enemies); // Allow towers to fire at a target
-        }
-        bulletManager.updateBullets(elapsed);
-
-        // Clean up any dead enemies
-        for (int i = 0; i < enemies.size(); i++) {
-            Enemy thisEnemy = enemies.elementAt(i);
-            if (thisEnemy.isDead()) {
-                enemies.remove(thisEnemy);
-                bulletManager.onTargetKilled(thisEnemy);
-                money += thisEnemy.getYield();
-            } else if (thisEnemy.hasEscaped()) {
-                enemies.remove(thisEnemy);
-                livesRemaining -= thisEnemy.getEscapeCost();
-            }
-        }
     }
 
-    private void checkForEndGame() {
-        if (livesRemaining <= 0) {
-            // TODO Player lose
-        } else if (enemies.size() == 0) {
-            // TODO Player win
-        }
+    private boolean checkForEndGame() {
+        if (livesRemaining <= 0) return true;
+        if (enemies.size() == 0) return true;
+        return false;
     }
 
     /**
-     * Draw
-     *
-     * @param mapGfx
-     * @param infoboxGfx
+     * Drawing
      */
     public void draw(Graphics2D mapGfx, Graphics2D infoboxGfx) {
         mapGfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -277,46 +281,36 @@ public class Level {
 
 
         // Enemies
-        List<HealthBar> healthBars = new ArrayList<HealthBar>();
-        final int enemyCount = enemies.size();
-        for (int i = 0; i < enemyCount; i++) {
-            Enemy thisEnemy = enemies.elementAt(i);
-
-            if (thisEnemy.isAlive()) {
+        List<HealthBar> healthBars = new ArrayList<>();
+        for (Enemy enemy : enemies) {
+            if (enemy.isAlive()) {
                 mapGfx.setColor(new Color(69, 67, 120));
-            } else if (thisEnemy.isDying()) {
+            } else if (enemy.isDying()) {
                 mapGfx.setColor(new Color(80, 30, 30, 120));
             }
-            thisEnemy.draw(mapGfx, imgs);
+            enemy.draw(mapGfx, imgs);
 
-            // Draw health bar
-            if (thisEnemy.isAlive()) {
-                healthBars.add(thisEnemy.getHealthBar());
+            if (enemy.isAlive()) {
+                healthBars.add(enemy.getHealthBar());
             }
         }
 
 
         // Towers
-        final int towerCount = towers.size();
-        for (int i = 0; i < towerCount; i++) {
-            Tower thisTower = towers.elementAt(i);
-
-            thisTower.draw(mapGfx);
-
-            if (thisTower.isSelected()) {
-                Circle range = thisTower.getFireRadius();
+        for (Tower tower : towers) {
+            tower.draw(mapGfx);
+            if (tower.isSelected()) {
+                Circle range = tower.getFireRadius();
                 mapGfx.setColor(new Color(200, 200, 200));
                 mapGfx.drawOval(range.getX() - range.getRadius(), range.getY() - range.getRadius(),
                         range.getRadius() * 2, range.getRadius() * 2);
             }
         }
 
-        // Draw health bars
         for (HealthBar bar : healthBars) {
             bar.draw(mapGfx);
         }
 
-        // Finally, draw the bullets!
         bulletManager.drawBullets(mapGfx);
     }
 
