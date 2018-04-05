@@ -31,8 +31,8 @@ public class TowerButtonContainer {
         });
     }
 
-    public void addTowerButton(String imageId, TowerType towerType) {
-        buttons.add(new Button<>(buttons.size(), towerType, imageId));
+    public void addTowerButton(String buttonImageId, TowerType towerType) {
+        buttons.add(new Button<>(buttons.size(), towerType, buttonImageId));
     }
 
     public Optional<TowerType> getClickedTowerType(Point clickPt) {

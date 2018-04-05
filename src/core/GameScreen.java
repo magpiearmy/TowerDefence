@@ -20,22 +20,22 @@ public class GameScreen extends JPanel implements Runnable {
 
     private Thread thread = new Thread(this);
 
+    private UserInterface userInterface;
     private Level level;
     private int levelDrawOffsetX = 0;
     private int levelDrawOffsetY = 0;
-    private UserInterface shop;
     private int mouseX;
     private int mouseY;
 
     public GameScreen() {
-        level = new Level(this);
-        shop = new UserInterface(900, level);
+        level = new Level();
+        userInterface = new UserInterface(900, level);
         setBackground(new Color(20, 60, 90));
         setFocusable(true);
     }
 
     public void init() {
-        level.init(shop);
+        level.init(userInterface);
 
         setupInputHandlers();
 
@@ -58,8 +58,8 @@ public class GameScreen extends JPanel implements Runnable {
                     e.consume();
 
                 } else {
-                    // Click was outside the level so let the shop handle it
-                    shop.handleMouseClick(e);
+                    // Click was outside the level so let the userInterface handle it
+                    userInterface.handleMouseClick(e);
                 }
             }
         });
@@ -69,7 +69,7 @@ public class GameScreen extends JPanel implements Runnable {
             public void mouseMoved(MouseEvent e) {
                 mouseX = e.getX();
                 mouseY = e.getY();
-                shop.handleMouseMove(e);
+                userInterface.handleMouseMove(e);
             }
         });
 
@@ -79,7 +79,7 @@ public class GameScreen extends JPanel implements Runnable {
         getActionMap().put("pressedNumber", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                shop.selectItemByIndex(Integer.parseInt(arg0.getActionCommand()) - 1);
+                userInterface.selectItemByIndex(Integer.parseInt(arg0.getActionCommand()) - 1);
             }
         });
     }
@@ -100,8 +100,12 @@ public class GameScreen extends JPanel implements Runnable {
         BufferedImage mapCanvas = new BufferedImage(levelWidth, levelHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D mapGfx = (Graphics2D) mapCanvas.getGraphics();
 
-        BufferedImage infoboxCanvas = new BufferedImage(100, 40, BufferedImage.TYPE_INT_RGB);
+        BufferedImage infoboxCanvas = new BufferedImage(120, 50, BufferedImage.TYPE_INT_RGB);
         Graphics2D infoboxGfx = (Graphics2D) infoboxCanvas.getGraphics();
+        infoboxGfx.setColor(new Color(29, 54, 64));
+        infoboxGfx.fillRect(0, 0, infoboxCanvas.getWidth(), infoboxCanvas.getHeight());
+        infoboxGfx.setColor(Color.WHITE);
+        infoboxGfx.drawRect(0, 0, infoboxCanvas.getWidth()-1, infoboxCanvas.getHeight()-1);
 
         // Let level to the image canvas
         level.draw(mapGfx, infoboxGfx);
@@ -116,8 +120,8 @@ public class GameScreen extends JPanel implements Runnable {
         g2d.drawImage(mapCanvas, null, levelDrawOffsetX, levelDrawOffsetY);
         g2d.drawImage(infoboxCanvas, null, levelDrawOffsetX + levelWidth - infoboxCanvas.getWidth(), 520);
 
-        // Draw the shop
-        shop.draw(g2d, mouseX, mouseY);
+        // Draw the userInterface
+        userInterface.draw(g2d, mouseX, mouseY);
     }
 
     @Override

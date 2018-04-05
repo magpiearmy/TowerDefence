@@ -6,7 +6,6 @@ import towers.TowerFactory;
 import towers.TowerType;
 import ui.UserInterface;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class Level {
     private int towerMap[][];
     private Tile tiles[][];
     private MapLoader mapLoader;
-    private UserInterface shop;
+    private UserInterface ui;
     private final int tileSize;
     private int widthInTiles;
     private int heightInTiles;
@@ -37,9 +36,9 @@ public class Level {
     private BulletManager bulletManager;
     private TowerFactory towerFactory;
     private EnemyFactory enemyFactory;
-    private Vector<Tower> towers = new Vector<Tower>();
-    private Vector<Enemy> enemies = new Vector<Enemy>();
-    private Vector<ISelectable> clickables = new Vector<ISelectable>();
+    private Vector<Tower> towers = new Vector<>();
+    private Vector<Enemy> enemies = new Vector<>();
+    private Vector<ISelectable> clickables = new Vector<>();
 
     private Spawner spawner;
 
@@ -47,13 +46,13 @@ public class Level {
     private int livesRemaining;
     private int money;
 
-    public Level(JPanel screen) {
+    public Level() {
         tileSize = Tile.WIDTH;
         mapLoader = new MapLoader("Level_0.txt");
     }
 
-    public void init(UserInterface shop) {
-        this.shop = shop;
+    public void init(UserInterface ui) {
+        this.ui = ui;
 
         loadMap();
         buildTileArray();
@@ -67,7 +66,7 @@ public class Level {
         tower2Img = imgs.loadImage("tower2.png");
         tower3Img = imgs.loadImage("tower3.png");
 
-        setupShop(shop);
+        setupUI(ui);
 
         // Create the bullet manager and tower factory
         bulletManager = new BulletManager(getWidthInPixels(), getHeightInPixels());
@@ -88,31 +87,12 @@ public class Level {
         money = 300;
     }
 
-    private void setupShop(UserInterface shop) {
-        shop.setImageStore(imgs);
-        shop.addTower(tower1Img, TowerType.PROJECTILE);
-        shop.addTower(tower2Img, TowerType.RAY);
-        shop.addTower(tower3Img, TowerType.AREA);
-        shop.construct();
-    }
-
-    private void buildTowerArray() {
-        towerMap = new int[widthInTiles][heightInTiles];
-        for (int y = 0; y < heightInTiles; y++) {
-            for (int x = 0; x < widthInTiles; x++) {
-                towerMap[x][y] = 0;
-            }
-        }
-    }
-
-    private void buildTileArray() {
-        tiles = new Tile[widthInTiles][heightInTiles];
-        TileFactory tileFactory = new TileFactory(imgs);
-        for (int y = 0; y < heightInTiles; y++) {
-            for (int x = 0; x < widthInTiles; x++) {
-                tiles[x][y] = tileFactory.createTile(x, y, map.getTile(x, y));
-            }
-        }
+    private void setupUI(UserInterface ui) {
+        ui.setImageStore(imgs);
+        ui.addTowerButton(tower1Img, TowerType.PROJECTILE);
+        ui.addTowerButton(tower2Img, TowerType.RAY);
+        ui.addTowerButton(tower3Img, TowerType.AREA);
+        ui.buildInterface();
     }
 
     private void loadMap() {
@@ -128,6 +108,25 @@ public class Level {
         heightInTiles = map.getHeight();
     }
 
+    private void buildTileArray() {
+        tiles = new Tile[widthInTiles][heightInTiles];
+        TileFactory tileFactory = new TileFactory(imgs);
+        for (int y = 0; y < heightInTiles; y++) {
+            for (int x = 0; x < widthInTiles; x++) {
+                tiles[x][y] = tileFactory.createTile(x, y, map.getTile(x, y));
+            }
+        }
+    }
+
+    private void buildTowerArray() {
+        towerMap = new int[widthInTiles][heightInTiles];
+        for (int y = 0; y < heightInTiles; y++) {
+            for (int x = 0; x < widthInTiles; x++) {
+                towerMap[x][y] = 0;
+            }
+        }
+    }
+
     public int getWidthInPixels() {
         return widthInTiles * tileSize;
     }
@@ -138,7 +137,7 @@ public class Level {
 
     public void start() {
         started = true;
-        shop.onLevelStart();
+        ui.onLevelStart();
     }
 
     public boolean isStarted() {
@@ -149,8 +148,8 @@ public class Level {
         final int mx = e.getX();
         final int my = e.getY();
 
-        if (shop.getHeldItemType().isPresent()) {
-            placeTower(mx, my, shop.getHeldItemType().get());
+        if (ui.getHeldItemType().isPresent()) {
+            placeTower(mx, my, ui.getHeldItemType().get());
         } else {
             for (ISelectable clickable : clickables) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
@@ -172,7 +171,7 @@ public class Level {
 
         if (canPlaceTowerAtTile(mapX, mapY)) {
 
-            shop.clearHeldItem();
+            ui.clearHeldItem();
 
             Tower newTower = towerFactory.createTower(towerX, towerY, type);
             int cost = newTower.getCost(); // TODO store cost with a tower type instead of tower instance
@@ -192,23 +191,17 @@ public class Level {
         return (towerMap[mapX][mapY] == 0 && map.getTile(mapX, mapY) != 1);
     }
 
-    /**
-     * Update
-     *
-     * @param elapsed
-     */
     public void update(long elapsed) {
-        if (!started)
-            return;
+        if (!started) return;
 
-		/* First, do some end-game checks */
         checkForEndGame();
 
         updateEnemies(elapsed);
         updateTowers(elapsed);
         bulletManager.updateBullets(elapsed);
 
-        for (Enemy enemy: enemies) {
+        for (int i = 0; i < enemies.size(); i++) {
+            Enemy enemy = enemies.elementAt(i);
             if (enemy.isDead()) {
                 onEnemyKilled(enemy);
             } else if (enemy.hasEscaped()) {
@@ -258,12 +251,13 @@ public class Level {
      */
     public void draw(Graphics2D mapGfx, Graphics2D infoboxGfx) {
         mapGfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        infoboxGfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        infoboxGfx.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-        infoboxGfx.setFont(new Font("Consolas", Font.PLAIN, 12));
-        infoboxGfx.drawString(new StringBuilder("Money: " + money).toString(), 5, 15);
-        infoboxGfx.drawString(new StringBuilder("Lives: " + livesRemaining).toString(), 5, 32);
+        infoboxGfx.setFont(new Font("Consolas", Font.PLAIN, 14));
+        infoboxGfx.drawString(new StringBuilder("Money: " + money).toString(), 10, 20);
+        infoboxGfx.drawString(new StringBuilder("Lives: " + livesRemaining).toString(), 10, 40);
 
         // Tiles
         for (int y = 0; y < heightInTiles; y++) {
@@ -294,7 +288,6 @@ public class Level {
                 healthBars.add(enemy.getHealthBar());
             }
         }
-
 
         // Towers
         for (Tower tower : towers) {

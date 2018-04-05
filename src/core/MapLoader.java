@@ -33,7 +33,8 @@ public class MapLoader {
         }
 
         Map map = parseMapLines(mapLines);
-        if (map.getStart() == null || map.getEnd() == null) throw new RuntimeException("Map definition is missing start and/or end tile");
+        if (map.getStart() == null || map.getEnd() == null)
+            throw new RuntimeException("Map definition is missing start and/or end tile");
 
         map.loadPath();
         return map;

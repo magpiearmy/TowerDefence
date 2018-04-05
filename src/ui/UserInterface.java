@@ -15,11 +15,11 @@ public class UserInterface {
     enum ShopState {IDLE, HOLDING_ITEM}
 
     private TowerButtonContainer towerButtonContainer;
+
     private Button<Boolean> startButton;
     private String startButtonImageId;
     private TowerType heldItemType;
     private Level level;
-
     private ImageStore imageStore;
 
     private ShopState state = ShopState.IDLE;
@@ -29,15 +29,15 @@ public class UserInterface {
         towerButtonContainer = new TowerButtonContainer(screenWidth);
     }
 
-    public void addTower(String imageId, TowerType towerType) {
-        towerButtonContainer.addTowerButton(imageId, towerType);
+    public void addTowerButton(String buttonImageId, TowerType towerType) {
+        towerButtonContainer.addTowerButton(buttonImageId, towerType);
     }
 
     public void setImageStore(ImageStore imgs) {
         this.imageStore = imgs;
     }
 
-    public void construct() {
+    public void buildInterface() {
         towerButtonContainer.construct();
         buildStartButton();
     }
