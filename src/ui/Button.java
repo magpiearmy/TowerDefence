@@ -48,7 +48,7 @@ class Button<T> {
                 6,
                 6);
 
-        Image img = ImageStore.get().getImage(imageId);
+        Image img = ImageStore.getInstance().getImage(imageId);
         g.drawImage(
                 img,
                 rect.x + BUTTON_MARGIN,

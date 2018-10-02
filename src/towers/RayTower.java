@@ -38,7 +38,7 @@ public class RayTower extends Tower {
 
 //		if (target != null && !target.isAlive()) {
 //			target = null;
-//			_sprite.deactivate();
+//			_sprite.stopAnimating();
 //		}
 //
 //		if (_sprite.isActive())
@@ -54,7 +54,7 @@ public class RayTower extends Tower {
                 target.hit(roundedDamage);
             } else {
                 target = null;
-                sprite.deactivate();
+                sprite.stopAnimating();
             }
         }
 
@@ -76,7 +76,7 @@ public class RayTower extends Tower {
             Point enemyCenter = new Point((int) thisEnemy.getCenterX(), (int) thisEnemy.getCenterY());
             if (thisEnemy.isAlive() && fireRadius.contains(enemyCenter)) {
                 target = thisEnemy;
-                sprite.activate();
+                sprite.startAnimating();
                 return true;
             }
         }

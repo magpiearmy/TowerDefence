@@ -12,48 +12,49 @@ public class BulletTower extends Tower {
 
 	public static final int MAX_DAMAGE = 30;
 
-	private BulletManager _bulletManager;
-	private int _bulletSpeed = 0; // Pixels per second
-	private int _hitDamage = 0;
-	private int _reloadTime; // Reload time (in milliseconds)
-	private int _timeSinceFired;
+	private BulletManager bulletManager;
+	private int bulletSpeed = 0; // Pixels per second
+	private int hitDamage = 0;
+	private int reloadTime; // Reload time (in milliseconds)
+	private int timeSinceFired;
 
 	public BulletTower(int x, int y, int range, BulletManager manager) {
 		super(x, y, range);
-		_bulletManager = manager;
+		bulletManager = manager;
 	}
 
 	public void setDamage(int hitDamage) {
-		_hitDamage = hitDamage;
+		this.hitDamage = hitDamage;
 	}
 
 	public void setReloadTime(int reloadTime) {
-		_reloadTime = reloadTime;
-		_timeSinceFired = reloadTime;
+		this.reloadTime = reloadTime;
+		timeSinceFired = reloadTime;
 	}
 
 	public void setBulletSpeed(int bulletSpeed) {
-		_bulletSpeed = bulletSpeed;
+		this.bulletSpeed = bulletSpeed;
 	}
 
 	public boolean isReloaded() {
-		return (_timeSinceFired >= _reloadTime);
+		return (timeSinceFired >= reloadTime);
 	}
 
 	public boolean fire(Vector<Enemy> enemies) {
-		if (_timeSinceFired >= _reloadTime) {
+		if (timeSinceFired >= reloadTime) {
 			for (int i = 0; i < enemies.size(); i++) {
 				Enemy enemy = enemies.elementAt(i);
 				Point enemyCenter = new Point((int) enemy.getCenterX(), (int) enemy.getCenterY());
 
 				if (enemy.isAlive() && fireRadius.contains(enemyCenter)) {
-					_timeSinceFired = 0;
+					timeSinceFired = 0;
 
 					// Create a bullet
 					int bulletX = (int) (getCenterX() + Projectile.SIZE / 2);
 					int bulletY = (int) (getCenterY() + Projectile.SIZE / 2);
-					Projectile newBullet = new Projectile(new Point(bulletX, bulletY), enemy, _hitDamage, _bulletSpeed);
-					_bulletManager.addBullet(newBullet);
+					Projectile newBullet = new Projectile(new Point(bulletX, bulletY), enemy, hitDamage,
+						bulletSpeed);
+					bulletManager.addBullet(newBullet);
 					return true;
 				}
 			}
@@ -64,7 +65,7 @@ public class BulletTower extends Tower {
 
 	public void update(long elapsed) {
 		super.update(elapsed);
-		_timeSinceFired += elapsed;
+		timeSinceFired += elapsed;
 	}
 
 	public void draw(Graphics2D gfx) {

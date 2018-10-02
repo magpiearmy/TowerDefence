@@ -2,7 +2,7 @@ package core;
 
 public class TileFactory {
 
-	private static final String RESOURCE_DIRECTORY_PATH = "Res/";
+	private static final String RESOURCE_DIRECTORY_PATH = "resources/";
 	
 	public static final String FILEPATH_GRASS = RESOURCE_DIRECTORY_PATH + "grass.png";
 	public static final String FILEPATH_PATH = RESOURCE_DIRECTORY_PATH + "path.png";	

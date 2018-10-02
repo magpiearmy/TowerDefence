@@ -1,11 +1,10 @@
 package towers;
 
 import core.BulletManager;
-import org.omg.SendingContext.RunTime;
 
 public class TowerFactory {
 
-    public static final String RESOURCE_DIRECTORY_PATH = "Res/";
+    public static final String RESOURCE_DIRECTORY_PATH = "resources/";
     public static final String FILEPATH_TOWER1 = RESOURCE_DIRECTORY_PATH + "tower1.png";
     public static final String FILEPATH_TOWER2 = RESOURCE_DIRECTORY_PATH + "tower2.png";
     public static final String FILEPATH_TOWER3 = RESOURCE_DIRECTORY_PATH + "tower3.png";

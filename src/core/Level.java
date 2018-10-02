@@ -31,7 +31,7 @@ public class Level {
     private String tower1Img;
     private String tower2Img;
     private String tower3Img;
-    private ImageStore imgs = ImageStore.get();
+    private ImageStore imgs = ImageStore.getInstance();
 
     private BulletManager bulletManager;
     private TowerFactory towerFactory;
@@ -73,7 +73,7 @@ public class Level {
         bulletManager.init();
         towerFactory = new TowerFactory(bulletManager);
 
-        // Get the start positon from the map and get the corresponding tile
+        // Get the start positon from the map and getInstance the corresponding tile
         Point startPos = map.getStart();
         Tile startTile = tiles[startPos.x][startPos.y];
 

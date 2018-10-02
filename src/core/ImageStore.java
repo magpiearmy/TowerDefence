@@ -3,51 +3,42 @@ package core;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-public class ImageStore
-{
-	private static ImageStore _store = null;
-	
-	private final String 	_resDir;
-	
-	private Map<String, BufferedImage> _imageMap = new HashMap<String, BufferedImage>();
-	
-	public static ImageStore get() {
-		if (_store == null)
-			_store = new ImageStore();
-		return _store;
-	}
-	
-	protected ImageStore()
-	{
-		_resDir = "Res/";
-	}
-	
-	public String loadImage(String relFilepath)
-	{
-		BufferedImage img;
-		String key = relFilepath;
-		StringBuilder fullPath = new StringBuilder();
-		fullPath.append(_resDir).append(relFilepath);
-		
-		try
-		{
-			img = ImageIO.read(new File(fullPath.toString()));
-			_imageMap.put(key, img);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return key;
-	}
-	
-	public Image getImage(String imgId)
-	{
-		return _imageMap.get(imgId);
-	}
+public class ImageStore {
+  private static final ImageStore INSTANCE = new ImageStore();
+  private static final String RESOURCES_DIR = "resources/";
+
+  private Map<String, BufferedImage> imageMap = new HashMap<>();
+
+  public static ImageStore getInstance() {
+    return INSTANCE;
+  }
+
+  private ImageStore() {
+  }
+
+  public String loadImage(String relativeFilepath) {
+    String key = relativeFilepath;
+    StringBuilder fullPath = new StringBuilder();
+    fullPath.append(RESOURCES_DIR).append(relativeFilepath);
+
+    try {
+      BufferedImage img = ImageIO.read(new File(fullPath.toString()));
+      imageMap.put(key, img);
+    } catch (IOException e) {
+      System.err.println("Failed to load image resource [" + relativeFilepath + "]");
+      throw new RuntimeException(e);
+    }
+
+    return key;
+  }
+
+  public Image getImage(String imgId) {
+    return imageMap.get(imgId);
+  }
 }

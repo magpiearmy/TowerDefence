@@ -79,7 +79,7 @@ public class UserInterface {
 
         if (heldItemType != null) {
             String imageId = towerButtonContainer.getImageIdOfTowerType(heldItemType);
-            Image heldImage = ImageStore.get().getImage(imageId);
+            Image heldImage = ImageStore.getInstance().getImage(imageId);
             int drawX = mouseX - heldImage.getWidth(null) / 2;
             int drawY = mouseY - heldImage.getHeight(null) / 2;
             g.drawImage(heldImage, drawX, drawY, null);
@@ -119,12 +119,12 @@ public class UserInterface {
     }
 
     public void handleMouseMove(MouseEvent e) {
-        final Point clickPt = new Point(e.getX(), e.getY());
+        final Point mousePoint = new Point(e.getX(), e.getY());
 
-        if (startButton.rect.contains(clickPt)) {
+        if (startButton.rect.contains(mousePoint)) {
             startButton.highlighted = true;
         }
 
-        towerButtonContainer.handleMouseOver(clickPt);
+        towerButtonContainer.handleMouseOver(mousePoint);
     }
 }
