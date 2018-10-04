@@ -1,11 +1,11 @@
 package towers;
 
-import java.awt.*;
-import java.util.Vector;
-
 import core.BulletManager;
 import core.Enemy;
 import core.Projectile;
+
+import java.awt.*;
+import java.util.Vector;
 
 @SuppressWarnings("serial") public class BulletTower extends Tower {
 

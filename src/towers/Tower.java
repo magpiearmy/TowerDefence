@@ -1,9 +1,9 @@
 package towers;
 
-import java.awt.Graphics2D;
-import java.util.Vector;
-
 import core.*;
+
+import java.awt.*;
+import java.util.Vector;
 
 @SuppressWarnings("serial") public class Tower extends Tile implements ISelectable {
 

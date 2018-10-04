@@ -1,16 +1,14 @@
 package profiles;
 
-import java.io.InputStream;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
+import core.EnemyFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import core.EnemyFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.InputStream;
 
 public class ProfileParser {
   private static final String PROFILE_PATH = "/SpawnProfiles/";
@@ -35,6 +33,7 @@ public class ProfileParser {
       }
 
       profile.finish();
+
     } catch (Exception e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
