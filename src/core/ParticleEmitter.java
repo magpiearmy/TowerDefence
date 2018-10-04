@@ -1,13 +1,12 @@
 package core;
 
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.util.Vector;
-
 import towers.BasicElementType;
 import towers.CompoundElementType;
-import towers.RayTower;
 import towers.ElementProperties;
+import towers.RayTower;
+
+import java.awt.*;
+import java.util.Vector;
 
 public class ParticleEmitter {
 
@@ -16,8 +15,8 @@ public class ParticleEmitter {
   private Vector<StreamParticle> particles;
   private RayTower owningTower;
 
-  final int rate = 70;
-  int elapsed = 0;
+  final int rate = 80;
+  int timeSinceSpawn = 0;
 
   public ParticleEmitter(Point pos, RayTower owningTower, ElementProperties element) {
     this.pos = pos;
@@ -67,20 +66,24 @@ public class ParticleEmitter {
 
   public void update(long elapsed) {
 
-    particles.forEach(particle -> particle.update(elapsed));
-    particles.removeIf(StreamParticle::isDead);
-
     // Check to see if a new particle should be emitted
     Enemy target = owningTower.getEnemyTarget();
-    if (target != null) {
-      this.elapsed += elapsed;
-      if (this.elapsed >= rate) {
-        this.elapsed -= rate;
-        StreamParticle particle = new StreamParticle((Point)pos.clone(), target);
+    if (isTargetAlive(target)) {
+      timeSinceSpawn += elapsed;
+      if (timeSinceSpawn >= rate) {
+        timeSinceSpawn -= rate;
+        StreamParticle particle = new StreamParticle(new Point(pos), target);
         particle.init(imgId);
         particles.add(particle);
       }
     }
+
+    particles.forEach(particle -> particle.update(elapsed));
+    particles.removeIf(StreamParticle::isDead);
+  }
+
+  private boolean isTargetAlive(Enemy target) {
+    return target != null && target.isAlive();
   }
 
   public void drawParticles(Graphics2D gfx) {

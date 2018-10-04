@@ -6,7 +6,7 @@ import java.util.List;
 import core.Enemy;
 import core.EnemyFactory;
 
-public class WaveCommand extends CommandBase
+public class WaveCommand extends Command
 {
 	private enum State {
 		DELAYING,
@@ -25,7 +25,7 @@ public class WaveCommand extends CommandBase
 	
 	public WaveCommand(int enemyCount, int delay, int interval, EnemyFactory factory)
 	{
-		_type = CommandType.COMMAND_WAVE;
+		type = CommandType.COMMAND_WAVE;
 		_enemyCount = enemyCount;
 		_delayTotal = delay;
 		_interval = interval;

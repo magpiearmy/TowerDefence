@@ -2,7 +2,7 @@ package core;
 
 import java.awt.*;
 
-public class MovementComponent {
+public class PositionComponent {
 
   private Point position;
   private double speed;
@@ -11,7 +11,7 @@ public class MovementComponent {
   private double xOverflow = 0;
   private double yOverflow = 0;
 
-  public MovementComponent(Point position, double speed) {
+  public PositionComponent(Point position, double speed) {
     this.position = position;
     this.speed = speed;
   }
@@ -23,10 +23,6 @@ public class MovementComponent {
   public void moveTowardTarget(Point targetPos, long elapsed) {
 
     double distanceToMove = speed * ((double) elapsed / 1000f);
-
-    // The distance to move along both axes
-    int moveX, moveY;
-
     double distanceToTarget = position.distance(targetPos);
     double dx = targetPos.x - position.x;
     double dy = targetPos.y - position.y;
@@ -34,25 +30,31 @@ public class MovementComponent {
     if (distanceToMove > distanceToTarget)
       distanceToMove = distanceToTarget;
 
-    // Update the direction
     dirX = dx / distanceToTarget;
     dirY = dy / distanceToTarget;
 
-    // Calculate the true distance to move
-    double exactMoveX = dirX * distanceToMove;
-    double exactMoveY = dirY * distanceToMove;
-
-    moveX = (int)Math.floor(exactMoveX + xOverflow);
-    moveY = (int)Math.floor(exactMoveY + yOverflow);
-
     // When the distance to move this frame includes a fraction of one
     // pixel, we can't represent that on screen so we accrue the
-    // move distance 'overflow' and move a full pixel when we've
-    // accrued enough.
-    xOverflow += exactMoveX - (double)moveX;
-    yOverflow += exactMoveY - (double)moveY;
+    // 'overflow' and move a full pixel when we've accrued enough.
+    double exactMoveX = dirX * distanceToMove;
+    double exactMoveY = dirY * distanceToMove;
+    int moveX = (int) Math.floor(exactMoveX + xOverflow);
+    int moveY = (int) Math.floor(exactMoveY + yOverflow);
+    xOverflow += exactMoveX - (double) moveX;
+    yOverflow += exactMoveY - (double) moveY;
 
-    // Move!
+    position.translate(moveX, moveY);
+  }
+
+  public void moveInCurrentDirection(long elapsed) {
+    double distThisFrame = ((double) elapsed / 1000d) * speed;
+    double actualMoveX = dirX * distThisFrame;
+    double actualMoveY = dirY * distThisFrame;
+    int moveX = (int) Math.floor(actualMoveX + xOverflow);
+    int moveY = (int) Math.floor(actualMoveY + yOverflow);
+    xOverflow += actualMoveX - (double) moveX;
+    yOverflow += actualMoveY - (double) moveY;
+
     position.translate(moveX, moveY);
   }
 

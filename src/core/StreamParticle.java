@@ -1,7 +1,6 @@
 package core;
 
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
 
 public class StreamParticle {
 
@@ -10,18 +9,19 @@ public class StreamParticle {
   private boolean isDead = false;
   private Vector2D size;
 
-  private MovementComponent movementComponent;
+  private PositionComponent positionComponent;
 
   public StreamParticle(Point startPos, Enemy target) {
     this.target = target;
 
-    movementComponent = new MovementComponent(startPos, 200);
+    positionComponent = new PositionComponent(startPos, 200);
   }
 
   public void init(String imgId) {
     this.imgId = imgId;
-    size = new Vector2D(ImageStore.getInstance().getImage(this.imgId).getWidth(null),
-      ImageStore.getInstance().getImage(this.imgId).getHeight(null));
+
+    Image image = ImageStore.getInstance().getImage(imgId);
+    size = new Vector2D(image.getWidth(null), image.getHeight(null));
   }
 
   public boolean isDead() {
@@ -30,14 +30,15 @@ public class StreamParticle {
 
   public void update(long elapsed) {
 
-    if (isDead) {
+    if (isDead)
       return;
-    } else if (isTargetDead()) {
+
+    if (isTargetDead()) {
       isDead = true;
       return;
     }
 
-    movementComponent.moveTowardTarget(getPositionOfTarget(), elapsed);
+    positionComponent.moveTowardTarget(getPositionOfTarget(), elapsed);
 
     if (hasHitTarget()) {
       isDead = true;
@@ -49,7 +50,7 @@ public class StreamParticle {
   }
 
   private boolean hasHitTarget() {
-    return target.getHitBox().contains(movementComponent.getPosition());
+    return target.getHitBox().contains(positionComponent.getPosition());
   }
 
   private boolean isTargetDead() {
@@ -57,10 +58,11 @@ public class StreamParticle {
   }
 
   public void draw(Graphics2D gfx) {
-    if (isDead) return;
+    if (isDead)
+      return;
 
-    int posX = movementComponent.getPosition().x - size.x / 2;
-    int posY = movementComponent.getPosition().y - size.y / 2;
+    int posX = positionComponent.getPosition().x - size.x / 2;
+    int posY = positionComponent.getPosition().y - size.y / 2;
     gfx.drawImage(ImageStore.getInstance().getImage(imgId), posX, posY, null);
   }
 }

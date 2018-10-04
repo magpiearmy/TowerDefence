@@ -1,12 +1,12 @@
 package profiles;
 
-public class DelayCommand extends CommandBase
+public class DelayCommand extends Command
 {
 	private int _seconds;
 	
 	public DelayCommand(int seconds)
 	{
-		_type = CommandType.COMMAND_DELAY;
+		type = CommandType.COMMAND_DELAY;
 		_seconds = seconds;
 	}
 	

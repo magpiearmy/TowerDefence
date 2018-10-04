@@ -1,63 +1,67 @@
 package towers;
 
 import core.BulletManager;
+import core.ImageStore;
 
 public class TowerFactory {
+  private static final String TOWER1_TEXTURE_ID;
+  private static final String TOWER2_TEXTURE_ID;
+  private static final String TOWER3_TEXTURE_ID;
 
-    public static final String RESOURCE_DIRECTORY_PATH = "resources/";
-    public static final String FILEPATH_TOWER1 = RESOURCE_DIRECTORY_PATH + "tower1.png";
-    public static final String FILEPATH_TOWER2 = RESOURCE_DIRECTORY_PATH + "tower2.png";
-    public static final String FILEPATH_TOWER3 = RESOURCE_DIRECTORY_PATH + "tower3.png";
+  static {
+    final String tower1Filename = "tower1.png";
+    final String tower2Filename = "tower2.png";
+    final String tower3Filename = "tower3.png";
 
-    private BulletManager _bulletManager;
+    ImageStore images = ImageStore.getInstance();
+    TOWER1_TEXTURE_ID = images.loadImage(tower1Filename);
+    TOWER2_TEXTURE_ID = images.loadImage(tower2Filename);
+    TOWER3_TEXTURE_ID = images.loadImage(tower3Filename);
+  }
 
-    public TowerFactory(BulletManager bulletManager) {
-        _bulletManager = bulletManager;
+  private BulletManager bulletManager;
+
+  public TowerFactory(BulletManager bulletManager) {
+    this.bulletManager = bulletManager;
+  }
+
+  public Tower createTower(int x, int y, TowerType type) {
+    switch (type) {
+      case PROJECTILE: {
+        final int range = 120;
+        BulletTower tower = new BulletTower(x, y, range, bulletManager);
+        tower.setCost(50);
+        tower.setDamage(BulletTower.MAX_DAMAGE * 3);
+        tower.setBulletSpeed(400);
+        tower.setReloadTime(1200);
+        tower.setTextureId(TOWER1_TEXTURE_ID);
+
+        return tower;
+      }
+
+      case RAY: {
+        final int range = 100;
+        RayTower tower = new RayTower(x, y, range);
+        tower.setCost(90);
+        tower.setDamagePerSec(120);
+        tower.setTextureId(TOWER2_TEXTURE_ID);
+
+        return tower;
+      }
+
+      case AREA: {
+        final int range = 90;
+        BlastTower tower = new BlastTower(x, y, range);
+        tower.setCost(110);
+        tower.setBlastDamage(BulletTower.MAX_DAMAGE * 4);
+        tower.setReloadTime(2200);
+        tower.setTextureId(TOWER3_TEXTURE_ID);
+
+        return tower;
+      }
+
+      default:
+        throw new RuntimeException("Invalid TowerType: " + type);
     }
-
-    public Tower createTower(int x, int y, TowerType type) {
-        Tower newTower;
-
-        switch (type) {
-            case PROJECTILE: {
-                final int range = 120;
-                BulletTower tower = new BulletTower(x, y, range, _bulletManager);
-                tower.setCost(50);
-                tower.setDamage(BulletTower.MAX_DAMAGE * 2);
-                tower.setBulletSpeed(500);
-                tower.setReloadTime(500);
-                tower.loadTexture(FILEPATH_TOWER1);
-
-                newTower = tower;
-                break;
-            }
-
-            case RAY: {
-                final int range = 100;
-                RayTower tower = new RayTower(x, y, range);
-                tower.setCost(90);
-                tower.setDamagePerSec(120);
-                tower.loadTexture(FILEPATH_TOWER2);
-
-                newTower = tower;
-                break;
-            }
-
-            case AREA: {
-                final int range = 90;
-                BlastTower tower = new BlastTower(x, y, range);
-                tower.setCost(110);
-                tower.setBlastDamage(BulletTower.MAX_DAMAGE * 3);
-                tower.setReloadTime(2200);
-                tower.loadTexture(FILEPATH_TOWER3);
-
-                newTower = tower;
-                break;
-            }
-
-            default:
-                throw new RuntimeException("Invalid TowerType: " + type);
-        }
-        return newTower;
-    }
+  }
 }

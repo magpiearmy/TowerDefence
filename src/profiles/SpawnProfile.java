@@ -4,30 +4,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class SpawnProfile
-{
-	private List<CommandBase> _commands = new ArrayList<CommandBase>();
-	private Iterator<CommandBase> _iterator;
-	
-	public SpawnProfile()
-	{
-	}
-	
-	public void addCommand(CommandBase command)
-	{
-		_commands.add(command);
-	}
-	
-	public void finalize() {
-		_iterator = _commands.iterator();
-		_iterator.next();
-	}
-	
-	public CommandBase getNextCommand()
-	{
-		if (_iterator.hasNext())
-			return _iterator.next();
-		else
-			return null;
-	}
+public class SpawnProfile {
+  private List<Command> commands = new ArrayList<Command>();
+  private Iterator<Command> iterator;
+
+  public SpawnProfile() {
+  }
+
+  public void addCommand(Command command) {
+    commands.add(command);
+  }
+
+  public void finish() {
+    iterator = commands.iterator();
+    iterator.next();
+  }
+
+  public Command getNextCommand() {
+    if (iterator.hasNext())
+      return iterator.next();
+    else
+      return null;
+  }
 }
