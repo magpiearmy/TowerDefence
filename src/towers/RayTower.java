@@ -36,7 +36,7 @@ import java.util.Vector;
     super.update(elapsed);
 
     if (isCurrentTargetAlive()) {
-      if (fireRadius.contains(target.getCentre())) {
+      if (fireRadius.contains(target.getPosition())) {
         float damageThisFrame = ((float) damagePerSec / 1000f) * elapsed + damageLeftover;
         int roundedDamage = (int) Math.floor(damageThisFrame);
         damageLeftover = damageThisFrame - (float) roundedDamage;
@@ -60,7 +60,7 @@ import java.util.Vector;
 
     for (int i = 0; i < enemies.size(); i++) {
       Enemy thisEnemy = enemies.elementAt(i);
-      if (thisEnemy.isAlive() && fireRadius.contains(thisEnemy.getCentre())) {
+      if (thisEnemy.isAlive() && fireRadius.contains(thisEnemy.getPosition())) {
         target = thisEnemy;
         sprite.startAnimating();
         return true;
@@ -70,33 +70,8 @@ import java.util.Vector;
   }
 
   public void draw(Graphics2D gfx) {
-
-    // Draw the tower texture
     super.draw(gfx);
-    emitter.drawParticles(gfx);
 
-    //		if (target != null) {
-    //			Stroke prevStroke = gfx.getStroke();
-    //			Stroke currStroke = new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-    //			gfx.setStroke(currStroke);
-    //			gfx.setColor(new Color(250, 80, 25));
-    //			gfx.drawLine((int) getCenterX(), (int) getCenterY(), (int) target.getCenterX(), (int) target.getCenterY());
-    //			gfx.setStroke(prevStroke);
-    //		}
-
-    // Draw the sprite with the correct orientation
-    //		if (_sprite.isActive()) {
-    //			double rotation;
-    //			if (target != null && target.isAlive()) {
-    //				double dx = target.getCenterX() - getCenterX();
-    //				double dy = target.getCenterY() - getCenterY();
-    //				rotation = Math.atan2(dy, dx) + Math.PI*0.5;
-    //			} else {
-    //				rotation = _lastRotation;
-    //			}
-    //			_sprite.draw(gfx, (int)getCenterX(), (int)getCenterY(), rotation);
-    //			_lastRotation = rotation;
-    //		}
-
+    emitter.draw(gfx);
   }
 }

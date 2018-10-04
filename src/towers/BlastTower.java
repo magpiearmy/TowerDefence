@@ -36,17 +36,18 @@ import java.util.Vector;
   public boolean fire(Vector<Enemy> enemies) {
     if (timeSinceFired < reloadTime)
       return false;
-    for (int i = 0; i < enemies.size(); i++) {
-      Enemy thisEnemy = enemies.elementAt(i);
-      if (thisEnemy.isAlive()) {
-        Point enemyCenter = new Point((int) thisEnemy.getCenterX(), (int) thisEnemy.getCenterY());
+
+    for (Enemy enemy : enemies) {
+      if (enemy.isAlive()) {
+        Point enemyCenter = new Point(enemy.getPosition());
         if (fireRadius.contains(enemyCenter)) {
           drawTime = 80;
           timeSinceFired = 0;
-          thisEnemy.hit(blastDamage);
+          enemy.hit(blastDamage);
         }
       }
     }
+
     return true;
   }
 

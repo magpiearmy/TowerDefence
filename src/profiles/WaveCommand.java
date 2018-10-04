@@ -23,7 +23,7 @@ public class WaveCommand extends Command {
   private EnemyFactory factory;
 
   public WaveCommand(int enemyCount, int delay, int interval, EnemyFactory factory) {
-    type = CommandType.COMMAND_WAVE;
+    type = CommandType.WAVE;
     this.enemyCount = enemyCount;
     totalDelay = delay;
     this.interval = interval;

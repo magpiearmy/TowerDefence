@@ -4,17 +4,17 @@ import java.awt.*;
 
 @SuppressWarnings("serial") public class Tile extends Rectangle {
 
-  public static final int WIDTH = 48;
-  public static final int HEIGHT = 48;
+  public static final int TILE_WIDTH = 48;
+  public static final int TILE_HEIGHT = 48;
 
   public String textureId;
 
   public Tile() {
-    setBounds(0, 0, WIDTH, HEIGHT);
+    super(0, 0, TILE_WIDTH, TILE_HEIGHT);
   }
 
   public Tile(int x, int y) {
-    setBounds(x, y, WIDTH, HEIGHT);
+    super(x, y, TILE_WIDTH, TILE_HEIGHT);
   }
 
   public Point getCenter() {
@@ -24,5 +24,4 @@ import java.awt.*;
   public void setTextureId(String id) {
     textureId = id;
   }
-
 }

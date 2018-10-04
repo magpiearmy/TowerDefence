@@ -31,7 +31,6 @@ public class Spawner {
     if (enemies != null)
       spawnedEnemies.addAll(enemies);
 
-    // The current command has finished, getInstance the next one
     if (cmd.isFinished()) {
       cmd = profile.getNextCommand();
     }

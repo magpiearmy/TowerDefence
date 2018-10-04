@@ -23,11 +23,11 @@ public class TileFactory {
 
     switch (type) {
       case 0:
-        newTile = new Tile(x * Tile.WIDTH, y * Tile.HEIGHT);
+        newTile = new Tile(x * Tile.TILE_WIDTH, y * Tile.TILE_HEIGHT);
         newTile.setTextureId(grassImg);
         break;
       case 1:
-        newTile = new Tile(x * Tile.WIDTH, y * Tile.HEIGHT);
+        newTile = new Tile(x * Tile.TILE_WIDTH, y * Tile.TILE_HEIGHT);
         newTile.setTextureId(pathImg);
         break;
     }

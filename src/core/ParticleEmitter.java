@@ -8,10 +8,9 @@ import towers.RayTower;
 import java.awt.*;
 import java.util.Vector;
 
-public class ParticleEmitter {
+public class ParticleEmitter extends Entity {
 
   private String imgId;
-  private Point pos;
   private Vector<StreamParticle> particles;
   private RayTower owningTower;
 
@@ -19,7 +18,8 @@ public class ParticleEmitter {
   int timeSinceSpawn = 0;
 
   public ParticleEmitter(Point pos, RayTower owningTower, ElementProperties element) {
-    this.pos = pos;
+    super(pos);
+
     this.owningTower = owningTower;
     particles = new Vector<>();
 
@@ -60,11 +60,11 @@ public class ParticleEmitter {
     }
   }
 
-  public Point getPos() {
-    return pos;
+  private boolean isTargetAlive(Enemy target) {
+    return target != null && target.isAlive();
   }
 
-  public void update(long elapsed) {
+  @Override public void update(long elapsed) {
 
     // Check to see if a new particle should be emitted
     Enemy target = owningTower.getEnemyTarget();
@@ -72,7 +72,7 @@ public class ParticleEmitter {
       timeSinceSpawn += elapsed;
       if (timeSinceSpawn >= rate) {
         timeSinceSpawn -= rate;
-        StreamParticle particle = new StreamParticle(new Point(pos), target);
+        StreamParticle particle = new StreamParticle(new Point(position), target);
         particle.init(imgId);
         particles.add(particle);
       }
@@ -82,15 +82,9 @@ public class ParticleEmitter {
     particles.removeIf(StreamParticle::isDead);
   }
 
-  private boolean isTargetAlive(Enemy target) {
-    return target != null && target.isAlive();
-  }
-
-  public void drawParticles(Graphics2D gfx) {
+  @Override public void draw(Graphics2D gfx) {
     for (StreamParticle particle : particles) {
-      if (!particle.isDead()) {
-        particle.draw(gfx);
-      }
+      particle.draw(gfx);
     }
   }
 }

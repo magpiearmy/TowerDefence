@@ -30,35 +30,15 @@ public class BulletManager {
   }
 
   public void updateBullets(long elapsed) {
-    for (int i = 0; i < bullets.size(); i++) {
-      Projectile thisBullet = bullets.elementAt(i);
-
-      thisBullet.update(elapsed);
-
-      if (thisBullet.isDead() || isBulletOffScreen(thisBullet)) {
-        bullets.remove(thisBullet);
-        i--;
-      }
-    }
+    bullets.forEach(bullet -> bullet.update(elapsed));
+    bullets.removeIf(bullet -> bullet.isDead() || isBulletOffScreen(bullet));
   }
 
-  public void drawBullets(Graphics2D g) {
-    for (int i = 0; i < bullets.size(); i++) {
-      Projectile thisBullet = bullets.elementAt(i);
-      if (thisBullet.getChargePct() < 80) {
-        g.setColor(new Color(155, 155, 155 + thisBullet.getChargePct()));
-        g.fillOval(thisBullet.getBoundsX(), thisBullet.getBoundsY(), Projectile.SIZE - 2,
-          Projectile.SIZE - 2);
-      } else {
-        g.setColor(new Color(100, 201, 255));
-        g.fillOval(thisBullet.getBoundsX(), thisBullet.getBoundsY(), Projectile.SIZE,
-          Projectile.SIZE);
-      }
-    }
+  public void drawBullets(Graphics2D gfx) {
+    bullets.forEach(bullet -> bullet.draw(gfx));
   }
 
-  private boolean isBulletOffScreen(Projectile thisBullet) {
-    return !screenBounds.contains(new Point(thisBullet.getX(), thisBullet.getY()));
+  private boolean isBulletOffScreen(Projectile bullet) {
+    return !screenBounds.intersects(bullet.getBoundingRect());
   }
-
 }

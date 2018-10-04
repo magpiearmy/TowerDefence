@@ -3,12 +3,12 @@ package core;
 import java.awt.*;
 import java.util.Random;
 
-public class Projectile extends Circle {
+public class Projectile extends /*Circle*/ Entity {
 
-  public static final int SIZE = 7;
-  private static final int MAX_CHARGE_DISTANCE = Tile.HEIGHT / 2 + 8; //8px outside the tower bounds
+  public static final int RADIUS = 3;
+  public static final int DIAMETER = RADIUS * 2;
+  private static final int MAX_CHARGE_DISTANCE = Tile.TILE_HEIGHT / 2 + 5;
   private static final double MAX_CHARGE_TIME = 275; //ms
-
 
   private enum State {CHARGING, FIRING}
 
@@ -22,16 +22,16 @@ public class Projectile extends Circle {
 
   boolean isDead = false;
 
-  private PositionComponent positionComponent;
+  private MovementComponent movementComponent;
 
   public Projectile(Point startPos, Enemy target, int hitDamage, int speed) {
-    super(startPos, SIZE);
+    super(startPos, RADIUS * 2, RADIUS * 2);
 
     this.target = target;
     this.hitDamage = hitDamage;
-    this.chargeStartPos = new Point(position.x, position.y);
+    this.chargeStartPos = new Point(position);
 
-    positionComponent = new PositionComponent(startPos, speed);
+    movementComponent = new MovementComponent(speed);
     chargeEndPos = calculateChargeEndPos();
   }
 
@@ -41,8 +41,8 @@ public class Projectile extends Circle {
     int radians = r.nextInt() % (int) (2 * Math.PI);
 
     // Set the end position of the charge sequence based on the random angle
-    int chargeX = (int) (getX() + MAX_CHARGE_DISTANCE * Math.cos(radians));
-    int chargeY = (int) (getY() + MAX_CHARGE_DISTANCE * Math.sin(radians));
+    int chargeX = (int) (position.x + MAX_CHARGE_DISTANCE * Math.cos(radians));
+    int chargeY = (int) (position.y + MAX_CHARGE_DISTANCE * Math.sin(radians));
 
     return new Point(chargeX, chargeY);
   }
@@ -63,7 +63,7 @@ public class Projectile extends Circle {
     return (int) ((1.0f - (chargeTime / MAX_CHARGE_TIME)) * 100);
   }
 
-  public void update(long elapsed) {
+  @Override public void update(long elapsed) {
 
     if (isDead)
       return;
@@ -80,20 +80,29 @@ public class Projectile extends Circle {
     }
   }
 
+  @Override public void draw(Graphics2D gfx) {
+    if (getChargePct() < 80) {
+      gfx.setColor(new Color(155, 155, 155 + getChargePct()));
+      gfx.fillOval(position.x, position.y, DIAMETER - 2, DIAMETER - 2);
+    } else {
+      gfx.setColor(new Color(100, 201, 255));
+      gfx.fillOval(position.x, position.y, DIAMETER, DIAMETER);
+    }
+  }
+
   private void updateFiringPhase(long elapsed) {
 
     if (isTargetDead()) {
 
-      if (positionComponent.isStationary()) {
+      if (movementComponent.isStationary()) {
         isDead = true;
       } else {
-        positionComponent.moveInCurrentDirection(elapsed);
+        movementComponent.moveInCurrentDirection(position, elapsed);
       }
 
     } else {
 
-      positionComponent.moveTowardTarget(getTargetPos(), elapsed);
-      position = positionComponent.getPosition();
+      movementComponent.moveTowardTarget(position, getTargetPos(), elapsed);
 
       if (hasHitTarget()) {
         target.hit(hitDamage);
@@ -127,18 +136,14 @@ public class Projectile extends Circle {
   }
 
   private boolean hasHitTarget() {
-    return super.contains(getBoundsOfTarget());
+    return getBoundingRect().intersects(target.getBoundingRect());
   }
 
   private boolean isTargetDead() {
     return target == null || !target.isAlive();
   }
 
-  private Point getBoundsOfTarget() {
-    return new Point((int) target.getBounds().getCenterX(), (int) target.getBounds().getCenterY());
-  }
-
   private Point getTargetPos() {
-    return new Point((int) target.getCenterX(), (int) target.getCenterY());
+    return new Point(target.position);
   }
 }

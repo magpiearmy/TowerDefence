@@ -2,26 +2,26 @@ package core;
 
 import java.awt.*;
 
-public class StreamParticle {
+public class StreamParticle extends Entity {
 
   private Enemy target;
   private String imgId;
   private boolean isDead = false;
-  private Vector2D size;
 
-  private PositionComponent positionComponent;
+  private MovementComponent movementComponent;
 
   public StreamParticle(Point startPos, Enemy target) {
+    super(startPos, 0, 0);
     this.target = target;
 
-    positionComponent = new PositionComponent(startPos, 200);
+    movementComponent = new MovementComponent(200);
   }
 
   public void init(String imgId) {
     this.imgId = imgId;
 
     Image image = ImageStore.getInstance().getImage(imgId);
-    size = new Vector2D(image.getWidth(null), image.getHeight(null));
+    setSize(image.getWidth(null), image.getHeight(null));
   }
 
   public boolean isDead() {
@@ -38,7 +38,7 @@ public class StreamParticle {
       return;
     }
 
-    positionComponent.moveTowardTarget(getPositionOfTarget(), elapsed);
+    movementComponent.moveTowardTarget(position, getPositionOfTarget(), elapsed);
 
     if (hasHitTarget()) {
       isDead = true;
@@ -46,11 +46,11 @@ public class StreamParticle {
   }
 
   private Point getPositionOfTarget() {
-    return new Point((int) target.getCenterX(), (int) target.getCenterY());
+    return new Point(target.position);
   }
 
   private boolean hasHitTarget() {
-    return target.getHitBox().contains(positionComponent.getPosition());
+    return target.getHitBox().contains(position);
   }
 
   private boolean isTargetDead() {
@@ -61,8 +61,8 @@ public class StreamParticle {
     if (isDead)
       return;
 
-    int posX = positionComponent.getPosition().x - size.x / 2;
-    int posY = positionComponent.getPosition().y - size.y / 2;
+    int posX = position.x - width / 2;
+    int posY = position.y - height / 2;
     gfx.drawImage(ImageStore.getInstance().getImage(imgId), posX, posY, null);
   }
 }

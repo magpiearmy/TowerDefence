@@ -2,30 +2,24 @@ package core;
 
 import java.awt.*;
 
-public class PositionComponent {
+public class MovementComponent {
 
-  private Point position;
   private double speed;
   private double dirX = 0;
   private double dirY = 0;
   private double xOverflow = 0;
   private double yOverflow = 0;
 
-  public PositionComponent(Point position, double speed) {
-    this.position = position;
+  public MovementComponent(double speed) {
     this.speed = speed;
   }
 
-  public Point getPosition() {
-    return position;
-  }
-
-  public void moveTowardTarget(Point targetPos, long elapsed) {
+  public void moveTowardTarget(Point currentPos, Point targetPos, long elapsed) {
 
     double distanceToMove = speed * ((double) elapsed / 1000f);
-    double distanceToTarget = position.distance(targetPos);
-    double dx = targetPos.x - position.x;
-    double dy = targetPos.y - position.y;
+    double distanceToTarget = currentPos.distance(targetPos);
+    double dx = targetPos.x - currentPos.x;
+    double dy = targetPos.y - currentPos.y;
 
     if (distanceToMove > distanceToTarget)
       distanceToMove = distanceToTarget;
@@ -43,10 +37,10 @@ public class PositionComponent {
     xOverflow += exactMoveX - (double) moveX;
     yOverflow += exactMoveY - (double) moveY;
 
-    position.translate(moveX, moveY);
+    currentPos.translate(moveX, moveY);
   }
 
-  public void moveInCurrentDirection(long elapsed) {
+  public void moveInCurrentDirection(Point currentPos, long elapsed) {
     double distThisFrame = ((double) elapsed / 1000d) * speed;
     double actualMoveX = dirX * distThisFrame;
     double actualMoveY = dirY * distThisFrame;
@@ -55,7 +49,7 @@ public class PositionComponent {
     xOverflow += actualMoveX - (double) moveX;
     yOverflow += actualMoveY - (double) moveY;
 
-    position.translate(moveX, moveY);
+    currentPos.translate(moveX, moveY);
   }
 
   public boolean isStationary() {

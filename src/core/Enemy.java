@@ -1,9 +1,11 @@
 package core;
 
+import org.w3c.dom.css.Rect;
+
 import java.awt.*;
 import java.util.Vector;
 
-@SuppressWarnings("serial") public class Enemy extends Rectangle implements ISelectable {
+@SuppressWarnings("serial") public class Enemy extends Entity implements ISelectable {
   public static final int WIDTH = 48;
   public static final int HEIGHT = 48;
   private static final int MAX_HEALTH = 800;
@@ -17,7 +19,7 @@ import java.util.Vector;
 
   private EnemyState state;
 
-  private PositionComponent position;
+  private MovementComponent movement;
 
   private String textureAlive;
   private String textureDying;
@@ -34,9 +36,9 @@ import java.util.Vector;
 
   public Enemy(Point startPos, Vector<Point> waypoints, String textureAlive, String textureDying,
     int escapeCost) {
-    setSize(WIDTH, HEIGHT);
+    super(startPos, WIDTH, HEIGHT);
 
-    position = new PositionComponent(new Point(startPos), 20);
+    movement = new MovementComponent(20);
 
     state = EnemyState.STATE_ALIVE;
 
@@ -49,10 +51,6 @@ import java.util.Vector;
     yield = 30;
 
     healthBar = new HealthBar(startPos.x, startPos.y - 4, width, MAX_HEALTH);
-  }
-
-  public Enemy(Enemy other) {
-    escapeCost = other.escapeCost;
   }
 
   public boolean isAlive() {
@@ -85,13 +83,13 @@ import java.util.Vector;
 
   public HealthBar getHealthBar() {
     healthBar.setCurrentHP(health);
-    healthBar.setPosition(getRectPosition());
+    healthBar.setPosition(getBoundingRect().getLocation());
     return healthBar;
   }
 
   public Rectangle getHitBox() {
-    final int boxSize = 20;
-    return new Rectangle(x + boxSize / 2, y + boxSize / 2, boxSize, boxSize);
+    final int boxSize = 12;
+    return new Rectangle(position.x - boxSize / 2, position.y - boxSize / 2, boxSize, boxSize);
   }
 
   public void hit(int damage) {
@@ -116,9 +114,7 @@ import java.util.Vector;
         break;
       }
       case STATE_ALIVE: {
-        position.moveTowardTarget(getTargetPos(), elapsed);
-
-        super.setLocation(getRectPosition());
+        movement.moveTowardTarget(position, getTargetPos(), elapsed);
 
         if (hasReachedNextWaypoint()) {
           if (isNextWaypointTheLast()) {
@@ -133,30 +129,20 @@ import java.util.Vector;
     }
   }
 
-  public Point getCentre() {
-    return new Point(position.getPosition());
-  }
-
-  private Point getRectPosition() {
-    Point rectPos = new Point(position.getPosition());
-    rectPos.translate(-WIDTH / 2, -HEIGHT / 2);
-    return rectPos;
-  }
-
   private boolean isNextWaypointTheLast() {
     return nextWaypoint == waypoints.size() - 1;
   }
 
   private boolean hasReachedNextWaypoint() {
-    return waypoints.elementAt(nextWaypoint).equals(position.getPosition());
+    return waypoints.elementAt(nextWaypoint).equals(position);
   }
 
   private Point getTargetPos() {
     return new Point(waypoints.elementAt(nextWaypoint));
   }
 
-  public boolean wasClicked(int clickX, int clickY) {
-    return ((clickX >= x) && (clickX <= x + width) && (clickY >= y) && (clickY <= y + height));
+  @Override public boolean wasClicked(int clickX, int clickY) {
+    return getBoundingRect().contains(clickX, clickY);
   }
 
   public void draw(Graphics2D g) {
@@ -165,8 +151,12 @@ import java.util.Vector;
 
     Image image = getImageForCurrentState();
 
-    Point drawPos = getRectPosition();
-    g.drawImage(image, drawPos.x, drawPos.y, null);
+    Rectangle bounds = getBoundingRect();
+    g.drawImage(image, bounds.x, bounds.y, null);
+
+    Rectangle hitBox = getHitBox();
+    g.setColor(Color.red);
+    g.drawRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
   }
 
   private Image getImageForCurrentState() {

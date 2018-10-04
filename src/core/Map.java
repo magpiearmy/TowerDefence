@@ -95,8 +95,8 @@ public class Map {
   }
 
   private void addWaypoint(Point point) {
-    point.x = (point.x * Tile.WIDTH) + (Tile.WIDTH / 2);
-    point.y = (point.y * Tile.HEIGHT) + (Tile.HEIGHT / 2);
+    point.x = (point.x * Tile.TILE_WIDTH) + (Tile.TILE_WIDTH / 2);
+    point.y = (point.y * Tile.TILE_HEIGHT) + (Tile.TILE_HEIGHT / 2);
     waypoints.add(point);
   }
 

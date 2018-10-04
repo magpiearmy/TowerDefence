@@ -47,7 +47,7 @@ public class Level {
   private int money;
 
   public Level() {
-    tileSize = Tile.WIDTH;
+    tileSize = Tile.TILE_WIDTH;
     mapLoader = new MapLoader("Level_0.txt");
   }
 
@@ -164,10 +164,10 @@ public class Level {
   }
 
   public void placeTower(int clickX, int clickY, TowerType type) {
-    int towerX = (clickX - clickX % Tile.WIDTH);
-    int towerY = (clickY - clickY % Tile.HEIGHT);
-    int mapX = towerX / Tile.WIDTH;
-    int mapY = towerY / Tile.HEIGHT;
+    int towerX = (clickX - clickX % Tile.TILE_WIDTH);
+    int towerY = (clickY - clickY % Tile.TILE_HEIGHT);
+    int mapX = towerX / Tile.TILE_WIDTH;
+    int mapY = towerY / Tile.TILE_HEIGHT;
 
     if (canPlaceTowerAtTile(mapX, mapY)) {
 

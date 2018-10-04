@@ -17,8 +17,8 @@ package core;
   }
 
   public Vector2D getNextTileXY() {
-    int xCoord = this.x / Tile.WIDTH;
-    int yCoord = this.y / Tile.HEIGHT;
+    int xCoord = this.x / Tile.TILE_WIDTH;
+    int yCoord = this.y / Tile.TILE_HEIGHT;
 
     switch (direction) {
       case Direction.UP:

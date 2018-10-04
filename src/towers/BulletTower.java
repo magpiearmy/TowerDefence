@@ -44,12 +44,12 @@ import java.util.Vector;
       for (int i = 0; i < enemies.size(); i++) {
         Enemy enemy = enemies.elementAt(i);
 
-        if (enemy.isAlive() && fireRadius.contains(enemy.getCentre())) {
+        if (enemy.isAlive() && fireRadius.contains(enemy.getPosition())) {
           timeSinceFired = 0;
 
           // Create a bullet
-          int bulletX = (int) (getCenterX() + Projectile.SIZE / 2);
-          int bulletY = (int) (getCenterY() + Projectile.SIZE / 2);
+          int bulletX = (int) (getCenterX() + Projectile.RADIUS / 2);
+          int bulletY = (int) (getCenterY() + Projectile.RADIUS / 2);
           Projectile newBullet =
             new Projectile(new Point(bulletX, bulletY), enemy, hitDamage, bulletSpeed);
           bulletManager.addBullet(newBullet);

@@ -4,7 +4,7 @@ public class DelayCommand extends Command {
   private int seconds;
 
   public DelayCommand(int seconds) {
-    type = CommandType.COMMAND_DELAY;
+    type = CommandType.DELAY;
     this.seconds = seconds;
   }
 

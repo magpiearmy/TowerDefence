@@ -11,7 +11,7 @@ class Button<T> {
   public static final Color BUTTON_DISABLED_COLOR = new Color(50, 50, 50);
 
   public static final int BUTTON_MARGIN = 5;
-  public static final int BUTTON_SIZE = Tile.WIDTH + (BUTTON_MARGIN * 2);
+  public static final int BUTTON_SIZE = Tile.TILE_WIDTH + (BUTTON_MARGIN * 2);
 
   public T value;
   public int buttonIndex;

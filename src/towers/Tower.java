@@ -14,8 +14,8 @@ import java.util.Vector;
   protected boolean isSelected = false;
 
   public Tower(int x, int y, int range) {
-    this.setBounds(x, y, Tile.WIDTH, Tile.HEIGHT);
-    fireRadius = new Circle(x + Tile.WIDTH / 2, y + Tile.HEIGHT / 2, range);
+    this.setBounds(x, y, Tile.TILE_WIDTH, Tile.TILE_HEIGHT);
+    fireRadius = new Circle(x + Tile.TILE_WIDTH / 2, y + Tile.TILE_HEIGHT / 2, range);
   }
 
   public void setCost(int cost) {
