@@ -10,18 +10,17 @@ import java.util.Vector;
 
 public class ParticleEmitter extends Entity {
 
-  private String imgId;
-  private Vector<StreamParticle> particles;
+  private String imageId;
+  private Vector<StreamParticle> particles = new Vector<>();;
   private RayTower owningTower;
 
-  final int rate = 80;
-  int timeSinceSpawn = 0;
+  private final int rate = 80;
+  private int timeSinceSpawn = 0;
 
-  public ParticleEmitter(Point pos, RayTower owningTower, ElementProperties element) {
-    super(pos);
+  public ParticleEmitter(RayTower owningTower, ElementProperties element) {
+    super(owningTower.getCentre());
 
     this.owningTower = owningTower;
-    particles = new Vector<>();
 
     ImageStore images = ImageStore.getInstance();
 
@@ -31,13 +30,13 @@ public class ParticleEmitter extends Entity {
 
       switch (dualType) {
         case LAVA:
-          imgId = images.loadImage("particle_lava.png");
+          imageId = images.loadImage("particle_lava.png");
           break;
         case STEAM:
-          imgId = images.loadImage("particle_steam.png");
+          imageId = images.loadImage("particle_steam.png");
           break;
         case MUD:
-          imgId = images.loadImage("particle_mud.png");
+          imageId = images.loadImage("particle_mud.png");
           break;
       }
 
@@ -47,13 +46,13 @@ public class ParticleEmitter extends Entity {
       if (basicType != null) {
         switch (basicType) {
           case FIRE:
-            imgId = images.loadImage("particle_flame.png");
+            imageId = images.loadImage("particle_flame.png");
             break;
           case WATER:
-            imgId = images.loadImage("particle_water.png");
+            imageId = images.loadImage("particle_water.png");
             break;
           case EARTH:
-            imgId = images.loadImage("particle_earth.png");
+            imageId = images.loadImage("particle_earth.png");
             break;
         }
       }
@@ -64,7 +63,8 @@ public class ParticleEmitter extends Entity {
     return target != null && target.isAlive();
   }
 
-  @Override public void update(long elapsed) {
+  @Override
+  public void update(long elapsed) {
 
     // Check to see if a new particle should be emitted
     Enemy target = owningTower.getEnemyTarget();
@@ -72,8 +72,7 @@ public class ParticleEmitter extends Entity {
       timeSinceSpawn += elapsed;
       if (timeSinceSpawn >= rate) {
         timeSinceSpawn -= rate;
-        StreamParticle particle = new StreamParticle(new Point(position), target);
-        particle.init(imgId);
+        StreamParticle particle = new StreamParticle(new Point(position), target, imageId);
         particles.add(particle);
       }
     }
@@ -82,9 +81,10 @@ public class ParticleEmitter extends Entity {
     particles.removeIf(StreamParticle::isDead);
   }
 
-  @Override public void draw(Graphics2D gfx) {
+  @Override
+  public void draw(Graphics2D g) {
     for (StreamParticle particle : particles) {
-      particle.draw(gfx);
+      particle.draw(g);
     }
   }
 }

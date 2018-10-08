@@ -7,21 +7,22 @@ import core.ParticleEmitter;
 import java.awt.*;
 import java.util.Vector;
 
-@SuppressWarnings("serial") public class RayTower extends Tower {
+@SuppressWarnings("serial")
+public class RayTower extends Tower {
+
   private Enemy target = null;
   private int damagePerSec;
   private float damageLeftover = 0;
   private ParticleEmitter emitter;
 
-  private double lastRotation = 0;
-
   private AnimatedSprite sprite;
 
-  public RayTower(int x, int y, int range) {
-    super(x, y, range);
+  public RayTower(Point pos, int range) {
+    super(pos, range);
+
     sprite = new AnimatedSprite("flame_spritesheet.png", 160, 160);
     elements.addElement(BasicElementType.FIRE);
-    emitter = new ParticleEmitter(new Point(getCenter().x, getCenter().y), this, elements);
+    emitter = new ParticleEmitter(this, elements);
   }
 
   public void setDamagePerSec(int damagePerSec) {
@@ -55,6 +56,7 @@ import java.util.Vector;
   }
 
   public boolean fire(Vector<Enemy> enemies) {
+
     if (isCurrentTargetAlive())
       return false;
 
@@ -66,6 +68,7 @@ import java.util.Vector;
         return true;
       }
     }
+
     return false;
   }
 

@@ -4,8 +4,8 @@ import java.awt.*;
 
 public interface GameEntity {
 
-  public void update(long elapsed);
+  void update(long elapsed);
 
-  public void draw(Graphics2D gfx);
+  void draw(Graphics2D gfx);
 
 }

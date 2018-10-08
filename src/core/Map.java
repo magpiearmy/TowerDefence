@@ -16,11 +16,11 @@ public class Map {
 
   public Map(int mapData[][], Point start, Point end) {
     this.mapData = mapData;
-    width = this.mapData[0].length;
-    height = this.mapData.length;
-
     this.start = start;
     this.end = end;
+
+    width = this.mapData[0].length;
+    height = this.mapData.length;
   }
 
   public int getTile(int x, int y) {

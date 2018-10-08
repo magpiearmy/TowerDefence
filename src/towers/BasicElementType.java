@@ -1,5 +1,5 @@
 package towers;
 
 public enum BasicElementType {
-  FIRE, WATER, EARTH, WIND
+  FIRE, WATER, EARTH, WIND, NUCLEAR
 }

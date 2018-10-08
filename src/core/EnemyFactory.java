@@ -13,6 +13,7 @@ public class EnemyFactory {
   public EnemyFactory(Point startPos, Vector<Point> waypoints, ImageStore imgStore) {
     this.startPos = startPos;
     this.waypoints = waypoints;
+
     enemyImg = imgStore.loadImage("enemy1.png");
     enemyDyingImg = imgStore.loadImage("enemy2.png");
   }

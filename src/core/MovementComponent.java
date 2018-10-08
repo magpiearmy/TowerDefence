@@ -4,17 +4,26 @@ import java.awt.*;
 
 public class MovementComponent {
 
+  private Entity entity;
+
   private double speed;
   private double dirX = 0;
   private double dirY = 0;
   private double xOverflow = 0;
   private double yOverflow = 0;
 
-  public MovementComponent(double speed) {
+  public MovementComponent(Entity entity, double speed) {
+    this.entity = entity;
     this.speed = speed;
   }
 
-  public void moveTowardTarget(Point currentPos, Point targetPos, long elapsed) {
+  public void setSpeed(double speed) {
+    this.speed = speed;
+  }
+
+  public void moveTowardTarget(Point targetPos, long elapsed) {
+
+    Point currentPos = entity.getCentre();
 
     double distanceToMove = speed * ((double) elapsed / 1000f);
     double distanceToTarget = currentPos.distance(targetPos);
@@ -37,10 +46,10 @@ public class MovementComponent {
     xOverflow += exactMoveX - (double) moveX;
     yOverflow += exactMoveY - (double) moveY;
 
-    currentPos.translate(moveX, moveY);
+    entity.position.translate(moveX, moveY);
   }
 
-  public void moveInCurrentDirection(Point currentPos, long elapsed) {
+  public void moveInCurrentDirection(long elapsed) {
     double distThisFrame = ((double) elapsed / 1000d) * speed;
     double actualMoveX = dirX * distThisFrame;
     double actualMoveY = dirY * distThisFrame;
@@ -49,7 +58,7 @@ public class MovementComponent {
     xOverflow += actualMoveX - (double) moveX;
     yOverflow += actualMoveY - (double) moveY;
 
-    currentPos.translate(moveX, moveY);
+    entity.position.translate(moveX, moveY);
   }
 
   public boolean isStationary() {

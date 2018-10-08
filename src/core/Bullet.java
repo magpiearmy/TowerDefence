@@ -3,20 +3,22 @@ package core;
 import java.awt.*;
 import java.util.Random;
 
-public class Projectile extends /*Circle*/ Entity {
-
-  public static final int RADIUS = 3;
-  public static final int DIAMETER = RADIUS * 2;
-  private static final int MAX_CHARGE_DISTANCE = Tile.TILE_HEIGHT / 2 + 5;
-  private static final double MAX_CHARGE_TIME = 275; //ms
+public class Bullet extends Entity {
 
   private enum State {CHARGING, FIRING}
 
 
-  private State state = State.CHARGING;
+  public static final int RADIUS = 3;
+  public static final int DIAMETER = RADIUS * 2;
+  public static final int DIAMETER_WHEN_CHARGING = DIAMETER - 2;
+  private static final int MAX_CHARGE_DISTANCE = Tile.TILE_HEIGHT / 2 + 5;
+  private static final double MAX_CHARGE_TIME = 300; //ms
+
+  private final double chargeSpeed;
+  private final double firingSpeed;
+
+  private State state;
   private Point chargeEndPos;
-  private Point chargeStartPos;
-  private double chargeTime = MAX_CHARGE_TIME;
   private Enemy target;
   private int hitDamage;
 
@@ -24,14 +26,15 @@ public class Projectile extends /*Circle*/ Entity {
 
   private MovementComponent movementComponent;
 
-  public Projectile(Point startPos, Enemy target, int hitDamage, int speed) {
+  public Bullet(Point startPos, Enemy target, int hitDamage, double speed) {
     super(startPos, RADIUS * 2, RADIUS * 2);
 
     this.target = target;
     this.hitDamage = hitDamage;
-    this.chargeStartPos = new Point(position);
-
-    movementComponent = new MovementComponent(speed);
+    this.chargeSpeed = 100;
+    this.firingSpeed = speed;
+    this.state = State.CHARGING;
+    movementComponent = new MovementComponent(this, chargeSpeed);
     chargeEndPos = calculateChargeEndPos();
   }
 
@@ -55,15 +58,17 @@ public class Projectile extends /*Circle*/ Entity {
     return target;
   }
 
-  public void setTargetDead() {
+  public void onTargetIsDead() {
     target = null;
   }
 
   public int getChargePct() {
-    return (int) ((1.0f - (chargeTime / MAX_CHARGE_TIME)) * 100);
+    double distanceToEndOfCharge = position.distance(chargeEndPos);
+    return (int) (100 - ((distanceToEndOfCharge * 100) / MAX_CHARGE_DISTANCE));
   }
 
-  @Override public void update(long elapsed) {
+  @Override
+  public void update(long elapsed) {
 
     if (isDead)
       return;
@@ -80,16 +85,6 @@ public class Projectile extends /*Circle*/ Entity {
     }
   }
 
-  @Override public void draw(Graphics2D gfx) {
-    if (getChargePct() < 80) {
-      gfx.setColor(new Color(155, 155, 155 + getChargePct()));
-      gfx.fillOval(position.x, position.y, DIAMETER - 2, DIAMETER - 2);
-    } else {
-      gfx.setColor(new Color(100, 201, 255));
-      gfx.fillOval(position.x, position.y, DIAMETER, DIAMETER);
-    }
-  }
-
   private void updateFiringPhase(long elapsed) {
 
     if (isTargetDead()) {
@@ -97,12 +92,12 @@ public class Projectile extends /*Circle*/ Entity {
       if (movementComponent.isStationary()) {
         isDead = true;
       } else {
-        movementComponent.moveInCurrentDirection(position, elapsed);
+        movementComponent.moveInCurrentDirection(elapsed);
       }
 
     } else {
 
-      movementComponent.moveTowardTarget(position, getTargetPos(), elapsed);
+      movementComponent.moveTowardTarget(getTargetPos(), elapsed);
 
       if (hasHitTarget()) {
         target.hit(hitDamage);
@@ -113,25 +108,32 @@ public class Projectile extends /*Circle*/ Entity {
   }
 
   private void updateChargingPhase(long elapsed) {
-    chargeTime -= elapsed;
 
-    if (chargeTime <= 0) {
-      chargeTime = 0;
-      position = chargeEndPos;
-    } else {
-
-      // Get current charge as a % of total charge time
-      double chargePct = 1.0f - (chargeTime / MAX_CHARGE_TIME);
-      Point deltaPos = new Point((int) (((chargeEndPos.x - chargeStartPos.x) * chargePct)),
-        (int) (((chargeEndPos.y - chargeStartPos.y) * chargePct)));
-
-      position.x = chargeStartPos.x + deltaPos.x;
-      position.y = chargeStartPos.y + deltaPos.y;
+    if (isTargetDead()) {
+      isDead = true;
+      return;
     }
 
-    // Move to next state when fully charged
-    if (position.equals(chargeEndPos)) {
-      state = State.FIRING;
+    movementComponent.moveTowardTarget(chargeEndPos, elapsed);
+
+    if (getCentre().equals(chargeEndPos)) {
+      enterFiringState();
+    }
+  }
+
+  private void enterFiringState() {
+    state = State.FIRING;
+    movementComponent.setSpeed(firingSpeed);
+  }
+
+  @Override
+  public void draw(Graphics2D gfx) {
+    if (state == State.CHARGING && getChargePct() < 80) {
+      gfx.setColor(new Color(155, 155, 155 + getChargePct()));
+      gfx.fillOval(position.x, position.y, DIAMETER_WHEN_CHARGING, DIAMETER_WHEN_CHARGING);
+    } else {
+      gfx.setColor(new Color(100, 201, 255));
+      gfx.fillOval(position.x, position.y, DIAMETER, DIAMETER);
     }
   }
 

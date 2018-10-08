@@ -2,6 +2,9 @@ package towers;
 
 import core.BulletManager;
 import core.ImageStore;
+import core.Tile;
+
+import java.awt.*;
 
 public class TowerFactory {
   private static final String TOWER1_TEXTURE_ID;
@@ -26,36 +29,39 @@ public class TowerFactory {
   }
 
   public Tower createTower(int x, int y, TowerType type) {
+
+    Point towerCentre = new Point(x + Tile.TILE_WIDTH / 2, y + Tile.TILE_HEIGHT / 2);
+
     switch (type) {
       case PROJECTILE: {
         final int range = 120;
-        BulletTower tower = new BulletTower(x, y, range, bulletManager);
+        BulletTower tower = new BulletTower(towerCentre, range, bulletManager);
         tower.setCost(50);
         tower.setDamage(BulletTower.MAX_DAMAGE * 3);
         tower.setBulletSpeed(400);
         tower.setReloadTime(1200);
-        tower.setTextureId(TOWER1_TEXTURE_ID);
+        tower.setImageId(TOWER1_TEXTURE_ID);
 
         return tower;
       }
 
       case RAY: {
         final int range = 100;
-        RayTower tower = new RayTower(x, y, range);
+        RayTower tower = new RayTower(towerCentre, range);
         tower.setCost(90);
         tower.setDamagePerSec(120);
-        tower.setTextureId(TOWER2_TEXTURE_ID);
+        tower.setImageId(TOWER2_TEXTURE_ID);
 
         return tower;
       }
 
       case AREA: {
         final int range = 90;
-        BlastTower tower = new BlastTower(x, y, range);
+        BlastTower tower = new BlastTower(towerCentre, range);
         tower.setCost(110);
         tower.setBlastDamage(BulletTower.MAX_DAMAGE * 4);
         tower.setReloadTime(2200);
-        tower.setTextureId(TOWER3_TEXTURE_ID);
+        tower.setImageId(TOWER3_TEXTURE_ID);
 
         return tower;
       }

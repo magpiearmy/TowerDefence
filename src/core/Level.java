@@ -78,10 +78,10 @@ public class Level {
     Tile startTile = tiles[startPos.x][startPos.y];
 
     // Create enemy factory
-    EnemyFactory enemyFactory = new EnemyFactory(startTile.getCenter(), map.getWaypoints(), imgs);
+    EnemyFactory enemyFactory = new EnemyFactory(startTile.getCentre(), map.getWaypoints(), imgs);
 
-    ProfileParser profParser = new ProfileParser(enemyFactory);
-    spawner = new Spawner(profParser.parse("profile1.xml"));
+    ProfileParser profileParser = new ProfileParser(enemyFactory);
+    spawner = new Spawner(profileParser.parse("profile1.xml"));
 
     livesRemaining = 5;
     money = 300;
@@ -110,7 +110,7 @@ public class Level {
 
   private void buildTileArray() {
     tiles = new Tile[widthInTiles][heightInTiles];
-    TileFactory tileFactory = new TileFactory(imgs);
+    TileFactory tileFactory = new TileFactory();
     for (int y = 0; y < heightInTiles; y++) {
       for (int x = 0; x < widthInTiles; x++) {
         tiles[x][y] = tileFactory.createTile(x, y, map.getTile(x, y));
@@ -266,7 +266,7 @@ public class Level {
       for (int x = 0; x < widthInTiles; x++) {
         Tile thisTile = tiles[x][y];
 
-        mapGfx.drawImage(imgs.getImage(thisTile.textureId), thisTile.x, thisTile.y, null);
+        mapGfx.drawImage(imgs.getImage(thisTile.imageId), thisTile.x, thisTile.y, null);
 
         mapGfx.setColor(new Color(80, 120, 80));
         mapGfx.drawRect(thisTile.x, thisTile.y, thisTile.width, thisTile.height);

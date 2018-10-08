@@ -1,21 +1,13 @@
 package core;
 
 public class TileFactory {
+  private static final String GRASS_IMAGE_ID;
+  private static final String PATH_IMAGE_ID;
 
-  private static final String RESOURCE_DIRECTORY_PATH = "resources/";
-
-  public static final String FILEPATH_GRASS = RESOURCE_DIRECTORY_PATH + "grass.png";
-  public static final String FILEPATH_PATH = RESOURCE_DIRECTORY_PATH + "path.png";
-
-  private static String grassImg = null;
-  private static String pathImg = null;
-
-  private ImageStore imgs;
-
-  public TileFactory(ImageStore imgs) {
-    this.imgs = imgs;
-    grassImg = imgs.loadImage("grass.png");
-    pathImg = imgs.loadImage("path.png");
+  static {
+    ImageStore images = ImageStore.getInstance();
+    GRASS_IMAGE_ID = images.loadImage("grass.png");
+    PATH_IMAGE_ID = images.loadImage("path.png");
   }
 
   public Tile createTile(int x, int y, int type) {
@@ -24,11 +16,11 @@ public class TileFactory {
     switch (type) {
       case 0:
         newTile = new Tile(x * Tile.TILE_WIDTH, y * Tile.TILE_HEIGHT);
-        newTile.setTextureId(grassImg);
+        newTile.setImageId(GRASS_IMAGE_ID);
         break;
       case 1:
         newTile = new Tile(x * Tile.TILE_WIDTH, y * Tile.TILE_HEIGHT);
-        newTile.setTextureId(pathImg);
+        newTile.setImageId(PATH_IMAGE_ID);
         break;
     }
 

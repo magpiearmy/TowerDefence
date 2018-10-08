@@ -1,7 +1,5 @@
 package core;
 
-import org.w3c.dom.css.Rect;
-
 import java.awt.*;
 import java.util.Vector;
 
@@ -38,7 +36,7 @@ import java.util.Vector;
     int escapeCost) {
     super(startPos, WIDTH, HEIGHT);
 
-    movement = new MovementComponent(20);
+    movement = new MovementComponent(this, 20);
 
     state = EnemyState.STATE_ALIVE;
 
@@ -83,13 +81,14 @@ import java.util.Vector;
 
   public HealthBar getHealthBar() {
     healthBar.setCurrentHP(health);
-    healthBar.setPosition(getBoundingRect().getLocation());
+    healthBar.setPosition(position);
     return healthBar;
   }
 
   public Rectangle getHitBox() {
     final int boxSize = 12;
-    return new Rectangle(position.x - boxSize / 2, position.y - boxSize / 2, boxSize, boxSize);
+    Point centre = getCentre();
+    return new Rectangle(centre.x - boxSize / 2, centre.y - boxSize / 2, boxSize, boxSize);
   }
 
   public void hit(int damage) {
@@ -114,7 +113,7 @@ import java.util.Vector;
         break;
       }
       case STATE_ALIVE: {
-        movement.moveTowardTarget(position, getTargetPos(), elapsed);
+        movement.moveTowardTarget(getTargetPos(), elapsed);
 
         if (hasReachedNextWaypoint()) {
           if (isNextWaypointTheLast()) {
@@ -134,14 +133,15 @@ import java.util.Vector;
   }
 
   private boolean hasReachedNextWaypoint() {
-    return waypoints.elementAt(nextWaypoint).equals(position);
+    return waypoints.elementAt(nextWaypoint).equals(getCentre());
   }
 
   private Point getTargetPos() {
     return new Point(waypoints.elementAt(nextWaypoint));
   }
 
-  @Override public boolean wasClicked(int clickX, int clickY) {
+  @Override
+  public boolean wasClicked(int clickX, int clickY) {
     return getBoundingRect().contains(clickX, clickY);
   }
 
@@ -150,13 +150,7 @@ import java.util.Vector;
       return;
 
     Image image = getImageForCurrentState();
-
-    Rectangle bounds = getBoundingRect();
-    g.drawImage(image, bounds.x, bounds.y, null);
-
-    Rectangle hitBox = getHitBox();
-    g.setColor(Color.red);
-    g.drawRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+    g.drawImage(image, position.x, position.y, null);
   }
 
   private Image getImageForCurrentState() {
@@ -171,11 +165,13 @@ import java.util.Vector;
     }
   }
 
-  @Override public void select() {
+  @Override
+  public void select() {
     isSelected = true;
   }
 
-  @Override public void deselect() {
+  @Override
+  public void deselect() {
     isSelected = false;
   }
 }

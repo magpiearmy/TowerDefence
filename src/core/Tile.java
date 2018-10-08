@@ -2,12 +2,13 @@ package core;
 
 import java.awt.*;
 
-@SuppressWarnings("serial") public class Tile extends Rectangle {
+@SuppressWarnings("serial")
+public class Tile extends Rectangle {
 
   public static final int TILE_WIDTH = 48;
   public static final int TILE_HEIGHT = 48;
 
-  public String textureId;
+  public String imageId;
 
   public Tile() {
     super(0, 0, TILE_WIDTH, TILE_HEIGHT);
@@ -17,11 +18,11 @@ import java.awt.*;
     super(x, y, TILE_WIDTH, TILE_HEIGHT);
   }
 
-  public Point getCenter() {
+  public Point getCentre() {
     return new Point((int) getCenterX(), (int) getCenterY());
   }
 
-  public void setTextureId(String id) {
-    textureId = id;
+  public void setImageId(String imageId) {
+    this.imageId = imageId;
   }
 }

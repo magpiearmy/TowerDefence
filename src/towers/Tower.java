@@ -5,17 +5,24 @@ import core.*;
 import java.awt.*;
 import java.util.Vector;
 
-@SuppressWarnings("serial") public class Tower extends Tile implements ISelectable {
+@SuppressWarnings("serial")
+public class Tower extends Entity /*Tile*/ implements ISelectable {
 
   protected ElementProperties elements = new ElementProperties();
   protected Circle fireRadius;
   protected int cost = 0;
+  protected String imageId;
 
   protected boolean isSelected = false;
 
-  public Tower(int x, int y, int range) {
-    this.setBounds(x, y, Tile.TILE_WIDTH, Tile.TILE_HEIGHT);
-    fireRadius = new Circle(x + Tile.TILE_WIDTH / 2, y + Tile.TILE_HEIGHT / 2, range);
+  public Tower(Point pos, int range) {
+    super(pos, Tile.TILE_WIDTH, Tile.TILE_HEIGHT);
+
+    fireRadius = new Circle(getCentre(), range);
+  }
+
+  public void setImageId(String imageId) {
+    this.imageId = imageId;
   }
 
   public void setCost(int cost) {
@@ -24,14 +31,6 @@ import java.util.Vector;
 
   public boolean isSelected() {
     return isSelected;
-  }
-
-  public int getPosX() {
-    return x;
-  }
-
-  public int getPosY() {
-    return y;
   }
 
   public Circle getFireRadius() {
@@ -50,23 +49,26 @@ import java.util.Vector;
   }
 
   public void draw(Graphics2D gfx) {
-    ImageStore images = ImageStore.getInstance();
-    gfx.drawImage(images.getImage(textureId), x, y, null);
+    Image image = ImageStore.getInstance().getImage(imageId);
+    gfx.drawImage(image, position.x, position.y, null);
   }
 
   public boolean fire(Vector<Enemy> enemies) {
     return false;
   }
 
-  @Override public void select() {
+  @Override
+  public void select() {
     isSelected = true;
   }
 
-  @Override public void deselect() {
+  @Override
+  public void deselect() {
     isSelected = false;
   }
 
-  @Override public boolean wasClicked(int clickX, int clickY) {
-    return this.contains(clickX, clickY);
+  @Override
+  public boolean wasClicked(int clickX, int clickY) {
+    return getBoundingRect().contains(clickX, clickY);
   }
 }

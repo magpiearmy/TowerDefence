@@ -10,7 +10,6 @@ public class Spawner {
 
   private SpawnProfile profile;
   private Command cmd;
-  //private EnemyFactory _enemyFac;
   private List<Enemy> spawnedEnemies = new ArrayList<Enemy>();
 
   public Spawner(SpawnProfile profile) {

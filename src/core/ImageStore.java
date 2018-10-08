@@ -22,19 +22,20 @@ public class ImageStore {
   }
 
   public String loadImage(String relativeFilepath) {
-    String key = relativeFilepath;
     StringBuilder fullPath = new StringBuilder();
     fullPath.append(RESOURCES_DIR).append(relativeFilepath);
 
     try {
+
+      final String key = relativeFilepath;
       BufferedImage img = ImageIO.read(new File(fullPath.toString()));
       imageMap.put(key, img);
+      return key;
+
     } catch (IOException e) {
       System.err.println("Failed to load image resource [" + relativeFilepath + "]");
       throw new RuntimeException(e);
     }
-
-    return key;
   }
 
   public Image getImage(String imgId) {

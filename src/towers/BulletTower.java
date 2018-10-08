@@ -2,7 +2,7 @@ package towers;
 
 import core.BulletManager;
 import core.Enemy;
-import core.Projectile;
+import core.Bullet;
 
 import java.awt.*;
 import java.util.Vector;
@@ -17,9 +17,9 @@ import java.util.Vector;
   private int reloadTime; // Reload time (in milliseconds)
   private int timeSinceFired;
 
-  public BulletTower(int x, int y, int range, BulletManager manager) {
-    super(x, y, range);
-    bulletManager = manager;
+  public BulletTower(Point pos, int range, BulletManager bulletManager) {
+    super(pos, range);
+    this.bulletManager = bulletManager;
   }
 
   public void setDamage(int hitDamage) {
@@ -47,18 +47,20 @@ import java.util.Vector;
         if (enemy.isAlive() && fireRadius.contains(enemy.getPosition())) {
           timeSinceFired = 0;
 
-          // Create a bullet
-          int bulletX = (int) (getCenterX() + Projectile.RADIUS / 2);
-          int bulletY = (int) (getCenterY() + Projectile.RADIUS / 2);
-          Projectile newBullet =
-            new Projectile(new Point(bulletX, bulletY), enemy, hitDamage, bulletSpeed);
-          bulletManager.addBullet(newBullet);
+          bulletManager.addBullet(createBullet(enemy));
+
           return true;
         }
       }
     }
 
     return false;
+  }
+
+  private Bullet createBullet(Enemy enemy) {
+    int bulletX = getCentre().x - Bullet.RADIUS / 2;
+    int bulletY = getCentre().y - Bullet.RADIUS / 2;
+    return new Bullet(new Point(bulletX, bulletY), enemy, hitDamage, bulletSpeed);
   }
 
   public void update(long elapsed) {

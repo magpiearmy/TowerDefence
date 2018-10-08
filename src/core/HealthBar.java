@@ -2,7 +2,8 @@ package core;
 
 import java.awt.*;
 
-@SuppressWarnings("serial") public class HealthBar extends Rectangle {
+@SuppressWarnings("serial")
+public class HealthBar extends Rectangle {
 
   private static final int HEIGHT = 3;
   private int maxHP;
@@ -25,18 +26,18 @@ import java.awt.*;
     return (int) ((float) currentHP * 100f / (float) maxHP);
   }
 
-  public void draw(Graphics2D gfx) {
+  public void draw(Graphics2D g) {
 
     float healthCoefficient = (float) currentHP / (float) maxHP;
     int healthBarSize = (int) (this.width * healthCoefficient);
 
     if (getHealthPercent() < 30)
-      gfx.setColor(new Color(210, 30, 30));
+      g.setColor(new Color(210, 30, 30));
     else
-      gfx.setColor(new Color(20, 255, 20));
+      g.setColor(new Color(20, 255, 20));
 
-    gfx.fillRect(this.x, this.y, healthBarSize, this.height);
-    gfx.setColor(new Color(100, 100, 100));
-    gfx.drawRect(this.x, this.y, this.width, this.height);
+    g.fillRect(x, y, healthBarSize, height);
+    g.setColor(new Color(100, 100, 100));
+    g.drawRect(x, y, width, height);
   }
 }

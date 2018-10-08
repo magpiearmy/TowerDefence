@@ -42,8 +42,8 @@ class Button<T> {
 
     g.fillRoundRect(rect.x, rect.y, rect.width, rect.height, 6, 6);
 
-    Image img = ImageStore.getInstance().getImage(imageId);
-    g.drawImage(img, rect.x + BUTTON_MARGIN, rect.y + BUTTON_MARGIN, null);
+    Image image = ImageStore.getInstance().getImage(imageId);
+    g.drawImage(image, rect.x + BUTTON_MARGIN, rect.y + BUTTON_MARGIN, null);
 
 
     g.setColor(new Color(200, 200, 200));

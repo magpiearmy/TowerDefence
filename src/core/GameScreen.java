@@ -10,7 +10,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 
-@SuppressWarnings("serial") public class GameScreen extends JPanel implements Runnable {
+@SuppressWarnings("serial")
+public class GameScreen extends JPanel implements Runnable {
 
   private Thread thread = new Thread(this);
 
@@ -39,7 +40,8 @@ import java.awt.image.BufferedImage;
 
   private void setupInputHandlers() {
     addMouseListener(new MouseAdapter() {
-      @Override public void mousePressed(MouseEvent e) {
+      @Override
+      public void mousePressed(MouseEvent e) {
         // Check if the point lies within the main level window
         if (getLevelBounds().contains(e.getPoint())) {
 
@@ -58,7 +60,8 @@ import java.awt.image.BufferedImage;
     });
 
     addMouseMotionListener(new MouseMotionAdapter() {
-      @Override public void mouseMoved(MouseEvent e) {
+      @Override
+      public void mouseMoved(MouseEvent e) {
         mouseX = e.getX();
         mouseY = e.getY();
         userInterface.handleMouseMove(e);
@@ -69,7 +72,8 @@ import java.awt.image.BufferedImage;
     getInputMap().put(KeyStroke.getKeyStroke('2'), "pressedNumber");
     getInputMap().put(KeyStroke.getKeyStroke('3'), "pressedNumber");
     getActionMap().put("pressedNumber", new AbstractAction() {
-      @Override public void actionPerformed(ActionEvent arg0) {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
         userInterface.selectItemByIndex(Integer.parseInt(arg0.getActionCommand()) - 1);
       }
     });
@@ -82,11 +86,11 @@ import java.awt.image.BufferedImage;
 
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
+
     int levelWidth = level.getWidthInPixels();
     int levelHeight = level.getHeightInPixels();
-    levelDrawOffsetX =
-      (getWidth() - levelWidth) / 2;    // x-Offset to centre the level in the panel
-    levelDrawOffsetY = 5;                                // y-Offset
+    levelDrawOffsetX = (getWidth() - levelWidth) / 2;
+    levelDrawOffsetY = 5;
 
     // This buffered image is what the level will draw onto
     BufferedImage mapCanvas =
@@ -100,7 +104,6 @@ import java.awt.image.BufferedImage;
     infoboxGfx.setColor(Color.WHITE);
     infoboxGfx.drawRect(0, 0, infoboxCanvas.getWidth() - 1, infoboxCanvas.getHeight() - 1);
 
-    // Let level to the image canvas
     level.draw(mapGfx, infoboxGfx);
 
     // Add a small border
@@ -114,11 +117,11 @@ import java.awt.image.BufferedImage;
     g2d.drawImage(infoboxCanvas, null, levelDrawOffsetX + levelWidth - infoboxCanvas.getWidth(),
       520);
 
-    // Draw the userInterface
     userInterface.draw(g2d, mouseX, mouseY);
   }
 
-  @Override public void run() {
+  @Override
+  public void run() {
 
     boolean isRunning = true;
     long currentNanos;
@@ -138,6 +141,7 @@ import java.awt.image.BufferedImage;
       } catch (InterruptedException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
+        isRunning = false;
       }
     }
   }

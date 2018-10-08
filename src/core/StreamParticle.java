@@ -4,24 +4,23 @@ import java.awt.*;
 
 public class StreamParticle extends Entity {
 
+  private static final int WIDTH = 20;
+  private static final int HEIGHT = 20;
+  private static final int SPEED = 200;
+
   private Enemy target;
-  private String imgId;
+  private String imageId;
   private boolean isDead = false;
 
   private MovementComponent movementComponent;
 
-  public StreamParticle(Point startPos, Enemy target) {
-    super(startPos, 0, 0);
+  public StreamParticle(Point startPos, Enemy target, String imageId) {
+    super(startPos, WIDTH, HEIGHT);
+
     this.target = target;
+    this.imageId = imageId;
 
-    movementComponent = new MovementComponent(200);
-  }
-
-  public void init(String imgId) {
-    this.imgId = imgId;
-
-    Image image = ImageStore.getInstance().getImage(imgId);
-    setSize(image.getWidth(null), image.getHeight(null));
+    movementComponent = new MovementComponent(this, SPEED);
   }
 
   public boolean isDead() {
@@ -38,7 +37,7 @@ public class StreamParticle extends Entity {
       return;
     }
 
-    movementComponent.moveTowardTarget(position, getPositionOfTarget(), elapsed);
+    movementComponent.moveTowardTarget(getPositionOfTarget(), elapsed);
 
     if (hasHitTarget()) {
       isDead = true;
@@ -46,11 +45,11 @@ public class StreamParticle extends Entity {
   }
 
   private Point getPositionOfTarget() {
-    return new Point(target.position);
+    return new Point(target.getCentre());
   }
 
   private boolean hasHitTarget() {
-    return target.getHitBox().contains(position);
+    return target.getHitBox().contains(getCentre());
   }
 
   private boolean isTargetDead() {
@@ -61,8 +60,7 @@ public class StreamParticle extends Entity {
     if (isDead)
       return;
 
-    int posX = position.x - width / 2;
-    int posY = position.y - height / 2;
-    gfx.drawImage(ImageStore.getInstance().getImage(imgId), posX, posY, null);
+    Image image = ImageStore.getInstance().getImage(imageId);
+    gfx.drawImage(image, position.x, position.y, null);
   }
 }

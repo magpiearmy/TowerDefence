@@ -5,28 +5,24 @@ import java.util.Vector;
 
 public class BulletManager {
 
-  private Vector<Projectile> bullets;
+  private Vector<Bullet> bullets = new Vector<>();
   private Rectangle screenBounds;
 
   public BulletManager(int boundsWidth, int boundsHeight) {
     screenBounds = new Rectangle(boundsWidth, boundsHeight);
-    bullets = new Vector<>();
   }
 
   public void init() {
   }
 
-  public void addBullet(Projectile newBullet) {
+  public void addBullet(Bullet newBullet) {
     bullets.add(newBullet);
   }
 
   public void onTargetKilled(Enemy target) {
-    for (int i = 0; i < bullets.size(); i++) {
-      Projectile thisBullet = bullets.elementAt(i);
-      if (thisBullet.getTarget() == target) {
-        thisBullet.setTargetDead();
-      }
-    }
+    bullets.stream()
+      .filter(bullet -> bullet.getTarget() == target)
+      .forEach(Bullet::onTargetIsDead);
   }
 
   public void updateBullets(long elapsed) {
@@ -34,11 +30,11 @@ public class BulletManager {
     bullets.removeIf(bullet -> bullet.isDead() || isBulletOffScreen(bullet));
   }
 
-  public void drawBullets(Graphics2D gfx) {
-    bullets.forEach(bullet -> bullet.draw(gfx));
+  public void drawBullets(Graphics2D g) {
+    bullets.forEach(bullet -> bullet.draw(g));
   }
 
-  private boolean isBulletOffScreen(Projectile bullet) {
+  private boolean isBulletOffScreen(Bullet bullet) {
     return !screenBounds.intersects(bullet.getBoundingRect());
   }
 }

@@ -105,18 +105,25 @@ public class UserInterface {
 
   private void handleClickWhenHoldingItem(Point clickPt) {
     heldItemType = towerButtonContainer.getClickedTowerType(clickPt).orElse(null);
-    if (heldItemType == null)
+
+    if (heldItemType == null) {
       state = ShopState.IDLE;
+    }
   }
 
   private void handleClickWhenIdle(Point clickPt) {
+
     if (startButton.rect.contains(clickPt)) {
+
       if (!level.isStarted())
         level.start();
+
     } else {
       heldItemType = towerButtonContainer.getClickedTowerType(clickPt).orElse(null);
-      if (heldItemType != null)
+
+      if (heldItemType != null) {
         state = ShopState.HOLDING_ITEM;
+      }
     }
   }
 
