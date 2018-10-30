@@ -1,5 +1,7 @@
 package core;
 
+import java.awt.*;
+
 @SuppressWarnings("serial") public class PathTile extends Tile {
 
   public interface Direction {
@@ -16,19 +18,19 @@ package core;
     this.direction = direction;
   }
 
-  public Vector2D getNextTileXY() {
-    int xCoord = this.x / Tile.TILE_WIDTH;
-    int yCoord = this.y / Tile.TILE_HEIGHT;
+  public Point getNextTileXY() {
+    int tileX = this.x / Tile.TILE_WIDTH;
+    int tileY = this.y / Tile.TILE_HEIGHT;
 
     switch (direction) {
       case Direction.UP:
-        return new Vector2D(xCoord, yCoord - 1);
+        return new Point(tileX, tileY - 1);
       case Direction.RIGHT:
-        return new Vector2D(xCoord + 1, yCoord);
+        return new Point(tileX + 1, tileY);
       case Direction.DOWN:
-        return new Vector2D(xCoord, yCoord + 1);
+        return new Point(tileX, tileY + 1);
       case Direction.LEFT:
-        return new Vector2D(xCoord - 1, yCoord);
+        return new Point(tileX - 1, tileY);
       default:
         return null;
     }

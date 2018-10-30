@@ -8,47 +8,39 @@ import static towers.BasicElementType.*;
 
 public class ElementProperties {
 
-  private Set<BasicElementType> types = new HashSet<>();
-
-  public ElementProperties() {
-  }
+  private Set<BasicElementType> basicTypes = new HashSet<>();
 
   /**
-   * Turns on an element flag if allowed.
+   * Turns on an element flag, if allowed.
    *
    * @param type The BasicElementType to be added
-   * @return false if the element was already turned on or if a compound element
+   * @return false if the element type was already turned on or if a compound element
    * type is already in effect. Returns true otherwise.
    */
   public boolean addElement(BasicElementType type) {
-
-    if (getCompoundType() != null)
-      return false;
-
-    return types.add(type);
+    return basicTypes.add(type);
   }
 
   public BasicElementType getBasicType() {
     assert (getCompoundType() == null);
-    if (!types.isEmpty()) {
-      return types.iterator().next();
+
+    if (!basicTypes.isEmpty()) {
+      return basicTypes.iterator().next();
     } else {
       return null;
     }
   }
 
   /**
-   * Returns the CompoundElementType based on the current elements flags
+   * Returns the CompoundElementType based on the current basic element flags
    *
-   * @return
+   * @return The deduced CompoundElementType, or null if no type
+   * could be deduced
    */
   public CompoundElementType getCompoundType() {
-    if (types.containsAll(Arrays.asList(FIRE, EARTH)))
-      return CompoundElementType.LAVA;
-    if (types.containsAll(Arrays.asList(FIRE, WATER)))
-      return CompoundElementType.STEAM;
-    if (types.containsAll(Arrays.asList(EARTH, WATER)))
-      return CompoundElementType.MUD;
+    if (basicTypes.containsAll(Arrays.asList(FIRE, EARTH))) return CompoundElementType.LAVA;
+    if (basicTypes.containsAll(Arrays.asList(FIRE, WATER))) return CompoundElementType.STEAM;
+    if (basicTypes.containsAll(Arrays.asList(EARTH, WATER))) return CompoundElementType.MUD;
     return null;
   }
 }

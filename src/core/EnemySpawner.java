@@ -1,21 +1,21 @@
 package core;
 
-import profiles.Command;
-import profiles.SpawnProfile;
+import levelprofiles.ProfileStep;
+import levelprofiles.LevelProfile;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Spawner {
+public class EnemySpawner {
 
-  private SpawnProfile profile;
-  private Command cmd;
-  private List<Enemy> spawnedEnemies = new ArrayList<Enemy>();
+  private LevelProfile profile;
+  private ProfileStep cmd;
+  private List<Enemy> spawnedEnemies = new ArrayList<>();
 
-  public Spawner(SpawnProfile profile) {
+  public EnemySpawner(LevelProfile profile) {
     this.profile = profile;
 
-    cmd = profile.getNextCommand();
+    cmd = profile.getNextStep();
     if (cmd != null) {
       cmd.start();
     }
@@ -25,13 +25,13 @@ public class Spawner {
     if (cmd == null)
       return;
 
-    // Let the command update and collect any newly spawned enemies
-    List<Enemy> enemies = cmd.update(elapsed);
-    if (enemies != null)
-      spawnedEnemies.addAll(enemies);
+    List<Enemy> newEnemies = cmd.update(elapsed);
+
+    if (newEnemies != null)
+      spawnedEnemies.addAll(newEnemies);
 
     if (cmd.isFinished()) {
-      cmd = profile.getNextCommand();
+      cmd = profile.getNextStep();
     }
   }
 

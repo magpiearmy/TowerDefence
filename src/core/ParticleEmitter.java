@@ -11,7 +11,7 @@ import java.util.Vector;
 public class ParticleEmitter extends Entity {
 
   private String imageId;
-  private Vector<StreamParticle> particles = new Vector<>();;
+  private Vector<StreamParticle> particles = new Vector<>();
   private RayTower owningTower;
 
   private final int rate = 80;
@@ -22,45 +22,46 @@ public class ParticleEmitter extends Entity {
 
     this.owningTower = owningTower;
 
-    ImageStore images = ImageStore.getInstance();
-
     // Load the texture based on the element type
     CompoundElementType dualType = element.getCompoundType();
     if (dualType != null) {
-
-      switch (dualType) {
-        case LAVA:
-          imageId = images.loadImage("particle_lava.png");
-          break;
-        case STEAM:
-          imageId = images.loadImage("particle_steam.png");
-          break;
-        case MUD:
-          imageId = images.loadImage("particle_mud.png");
-          break;
-      }
-
-    } else { // No dual-type so check for basic type
-
+      loadDualTypeImage(dualType);
+    } else {
       BasicElementType basicType = element.getBasicType();
       if (basicType != null) {
-        switch (basicType) {
-          case FIRE:
-            imageId = images.loadImage("particle_flame.png");
-            break;
-          case WATER:
-            imageId = images.loadImage("particle_water.png");
-            break;
-          case EARTH:
-            imageId = images.loadImage("particle_earth.png");
-            break;
-        }
+        loadBasicTypeImage(basicType);
       }
     }
   }
 
-  private boolean isTargetAlive(Enemy target) {
-    return target != null && target.isAlive();
+  private void loadBasicTypeImage(BasicElementType basicType) {
+    ImageStore images = ImageStore.getInstance();
+    switch (basicType) {
+      case FIRE:
+        imageId = images.loadImage("particle_flame.png");
+        break;
+      case WATER:
+        imageId = images.loadImage("particle_water.png");
+        break;
+      case EARTH:
+        imageId = images.loadImage("particle_earth.png");
+        break;
+    }
+  }
+
+  private void loadDualTypeImage(CompoundElementType dualType) {
+    ImageStore images = ImageStore.getInstance();
+    switch (dualType) {
+      case LAVA:
+        imageId = images.loadImage("particle_lava.png");
+        break;
+      case STEAM:
+        imageId = images.loadImage("particle_steam.png");
+        break;
+      case MUD:
+        imageId = images.loadImage("particle_mud.png");
+        break;
+    }
   }
 
   @Override
@@ -86,5 +87,9 @@ public class ParticleEmitter extends Entity {
     for (StreamParticle particle : particles) {
       particle.draw(g);
     }
+  }
+
+  private boolean isTargetAlive(Enemy target) {
+    return target != null && target.isAlive();
   }
 }

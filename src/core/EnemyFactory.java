@@ -19,8 +19,6 @@ public class EnemyFactory {
   }
 
   public Enemy createEnemy(int enemyType) {
-
-    Enemy enemy = new Enemy(startPos, waypoints, enemyImg, enemyDyingImg, 1);
-    return enemy;
+    return new Enemy(startPos, waypoints, enemyImg, enemyDyingImg, 1);
   }
 }

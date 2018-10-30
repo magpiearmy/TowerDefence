@@ -1,6 +1,6 @@
 package core;
 
-import profiles.ProfileParser;
+import levelprofiles.ProfileParser;
 import towers.Tower;
 import towers.TowerFactory;
 import towers.TowerType;
@@ -40,7 +40,7 @@ public class Level {
   private Vector<Enemy> enemies = new Vector<>();
   private Vector<ISelectable> clickables = new Vector<>();
 
-  private Spawner spawner;
+  private EnemySpawner enemySpawner;
 
   // Player data
   private int livesRemaining;
@@ -81,7 +81,7 @@ public class Level {
     EnemyFactory enemyFactory = new EnemyFactory(startTile.getCentre(), map.getWaypoints(), imgs);
 
     ProfileParser profileParser = new ProfileParser(enemyFactory);
-    spawner = new Spawner(profileParser.parse("profile1.xml"));
+    enemySpawner = new EnemySpawner(profileParser.parse("profile1.xml"));
 
     livesRemaining = 5;
     money = 300;
@@ -231,10 +231,10 @@ public class Level {
   }
 
   private void updateEnemies(long elapsed) {
-    spawner.update(elapsed);
+    enemySpawner.update(elapsed);
 
-    if (spawner.hasSpawned()) {
-      enemies.addAll(spawner.getSpawnedEnemies());
+    if (enemySpawner.hasSpawned()) {
+      enemies.addAll(enemySpawner.getSpawnedEnemies());
     }
 
     for (int i = 0; i < enemies.size(); i++) {

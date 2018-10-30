@@ -26,10 +26,10 @@ public class ImageStore {
     fullPath.append(RESOURCES_DIR).append(relativeFilepath);
 
     try {
-
       final String key = relativeFilepath;
       BufferedImage img = ImageIO.read(new File(fullPath.toString()));
       imageMap.put(key, img);
+
       return key;
 
     } catch (IOException e) {
@@ -38,7 +38,7 @@ public class ImageStore {
     }
   }
 
-  public Image getImage(String imgId) {
-    return imageMap.get(imgId);
+  public Image getImage(String imageId) {
+    return imageMap.get(imageId);
   }
 }

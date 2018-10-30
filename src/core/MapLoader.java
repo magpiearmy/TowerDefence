@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapLoader {
-  private static final String MAPS_DIRECTORY_PATH = "/Maps/";
+  private static final String MAPS_DIRECTORY_PATH = "/maps/";
 
   private BufferedReader reader;
   private String filename;

@@ -1,8 +1,8 @@
-<profile>
+<levelProfile levelId="1">
 	<wave enemyCount="5" delay="2000" interval="2000"/>
 	<wave enemyCount="8" delay="10000" interval="800"/>
 	<wave enemyCount="10" delay="5000" interval="1000"/>
 	<wave enemyCount="5" delay="1000" interval="1200"/>
 	<wave enemyCount="8" delay="10000" interval="800"/>
 	<wave enemyCount="10" delay="5000" interval="500"/>
-</profile>
+</levelProfile>

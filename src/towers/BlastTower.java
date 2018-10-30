@@ -35,6 +35,7 @@ public class BlastTower extends Tower {
   }
 
   public boolean fire(Vector<Enemy> enemies) {
+
     if (timeSinceFired < reloadTime)
       return false;
 

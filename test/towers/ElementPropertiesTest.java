@@ -9,10 +9,24 @@ import static towers.CompoundElementType.*;
 class ElementPropertiesTest {
 
     @Test
-    void addElementReturnsTrueForFirstTwoElementsAndThenFalse() {
+    void addElementReturnsTrueForFirstTwoBasicTypes() {
         ElementProperties element = new ElementProperties();
         assertTrue(element.addElement(FIRE));
         assertTrue(element.addElement(WATER));
+    }
+
+    @Test
+    void addElementReturnsFalseWhenTwoTypesAreAlreadyInAdded() {
+        ElementProperties element = new ElementProperties();
+        assertTrue(element.addElement(EARTH));
+        assertTrue(element.addElement(FIRE));
+        assertFalse(element.addElement(WATER));
+    }
+
+    @Test
+    void addElementReturnsFalseWhenBasicTypeIsAlreadyAdded() {
+        ElementProperties element = new ElementProperties();
+        assertTrue(element.addElement(EARTH));
         assertFalse(element.addElement(EARTH));
     }
 
