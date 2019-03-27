@@ -5,13 +5,15 @@ import towers.CompoundElementType;
 import towers.ElementProperties;
 import towers.RayTower;
 
-import java.awt.*;
-import java.util.Vector;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParticleEmitter extends Entity {
 
   private String imageId;
-  private Vector<StreamParticle> particles = new Vector<>();
+  private List<StreamParticle> particles = new ArrayList<>();
   private RayTower owningTower;
 
   private final int rate = 80;
@@ -84,9 +86,7 @@ public class ParticleEmitter extends Entity {
 
   @Override
   public void draw(Graphics2D g) {
-    for (StreamParticle particle : particles) {
-      particle.draw(g);
-    }
+    particles.stream().forEach(particle -> particle.draw(g));
   }
 
   private boolean isTargetAlive(Enemy target) {

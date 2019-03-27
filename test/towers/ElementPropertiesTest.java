@@ -1,10 +1,18 @@
 package towers;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static towers.BasicElementType.*;
-import static towers.CompoundElementType.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static towers.BasicElementType.EARTH;
+import static towers.BasicElementType.FIRE;
+import static towers.BasicElementType.WATER;
+import static towers.CompoundElementType.LAVA;
+import static towers.CompoundElementType.MUD;
+import static towers.CompoundElementType.STEAM;
 
 class ElementPropertiesTest {
 

@@ -14,7 +14,6 @@ public class UserInterface {
 
   enum ShopState {IDLE, HOLDING_ITEM}
 
-
   private TowerButtonContainer towerButtonContainer;
 
   private Button<Boolean> startButton;
