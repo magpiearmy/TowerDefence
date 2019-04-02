@@ -23,13 +23,6 @@ public class StreamParticle extends Entity {
     movementComponent = new MovementComponent(this, SPEED);
   }
 
-  public void init(String imgId) {
-    this.imgId = imgId;
-
-    Image image = ImageStore.getInstance().getImage(imgId);
-    setSize(image.getWidth(null), image.getHeight(null));
-  }
-
   public boolean isDead() {
     return isDead;
   }
