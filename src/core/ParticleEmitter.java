@@ -77,11 +77,15 @@ public class ParticleEmitter extends Entity {
         timeSinceSpawn -= rate;
         StreamParticle particle = new StreamParticle(new Point(position), target, imageId);
         particles.add(particle);
+        System.out.println("Spawned particle");
       }
     }
 
     particles.forEach(particle -> particle.update(elapsed));
-    particles.removeIf(StreamParticle::isDead);
+    particles.removeIf(particle -> {
+      System.out.println("Removing particle");
+      return particle.isDead();
+    });
   }
 
   @Override

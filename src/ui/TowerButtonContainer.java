@@ -36,25 +36,18 @@ public class TowerButtonContainer {
   }
 
   public Optional<TowerType> getClickedTowerType(Point clickPt) {
-    return buttons.stream()
-      .filter(button -> button.rect.contains(clickPt))
-      .map(button -> button.value)
-      .findFirst();
+    return buttons.stream().filter(button -> button.rect.contains(clickPt))
+      .map(button -> button.value).findFirst();
   }
 
   public TowerType getTowerTypeByIndex(int idx) {
-    return buttons.stream()
-      .filter(button -> button.buttonIndex == idx)
-      .findFirst()
+    return buttons.stream().filter(button -> button.buttonIndex == idx).findFirst()
       .orElseThrow(IndexOutOfBoundsException::new).value;
   }
 
   public String getImageIdOfTowerType(TowerType heldItemType) {
-    return buttons.stream()
-      .filter(button -> button.value.equals(heldItemType))
-      .map(button -> button.imageId)
-      .findFirst()
-      .orElseThrow(RuntimeException::new);
+    return buttons.stream().filter(button -> button.value.equals(heldItemType))
+      .map(button -> button.imageId).findFirst().orElseThrow(RuntimeException::new);
   }
 
   public void handleMouseOver(Point clickPt) {

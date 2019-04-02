@@ -6,7 +6,7 @@ public class StreamParticle extends Entity {
 
   private static final int WIDTH = 20;
   private static final int HEIGHT = 20;
-  private static final int SPEED = 200;
+  private static final int SPEED = 120;
 
   private Enemy target;
   private String imageId;
@@ -21,6 +21,13 @@ public class StreamParticle extends Entity {
     this.imageId = imageId;
 
     movementComponent = new MovementComponent(this, SPEED);
+  }
+
+  public void init(String imgId) {
+    this.imgId = imgId;
+
+    Image image = ImageStore.getInstance().getImage(imgId);
+    setSize(image.getWidth(null), image.getHeight(null));
   }
 
   public boolean isDead() {
