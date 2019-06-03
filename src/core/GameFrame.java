@@ -1,7 +1,9 @@
 package core;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridLayout;
 
 @SuppressWarnings("serial") public class GameFrame extends JFrame {
 

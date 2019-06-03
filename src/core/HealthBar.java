@@ -1,6 +1,9 @@
 package core;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 @SuppressWarnings("serial")
 public class HealthBar extends Rectangle {

@@ -1,6 +1,6 @@
 package core;
 
-import java.awt.*;
+import java.awt.Point;
 
 @SuppressWarnings("serial") public class PathTile extends Tile {
 

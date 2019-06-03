@@ -1,6 +1,8 @@
 package core;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.util.Random;
 
 public class Bullet extends Entity {

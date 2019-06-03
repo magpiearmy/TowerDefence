@@ -1,6 +1,6 @@
 package core;
 
-import java.awt.*;
+import java.awt.Point;
 
 public class Circle {
 

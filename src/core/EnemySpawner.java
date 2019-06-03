@@ -1,7 +1,7 @@
 package core;
 
-import levelprofiles.ProfileStep;
 import levelprofiles.LevelProfile;
+import levelprofiles.ProfileStep;
 
 import java.util.ArrayList;
 import java.util.List;

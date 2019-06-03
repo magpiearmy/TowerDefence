@@ -1,6 +1,7 @@
 package core;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.Vector;
 
 public class BulletManager {

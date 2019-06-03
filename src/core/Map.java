@@ -1,6 +1,6 @@
 package core;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Vector;
 
 public class Map {

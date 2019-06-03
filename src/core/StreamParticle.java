@@ -1,6 +1,8 @@
 package core;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
 
 public class StreamParticle extends Entity {
 

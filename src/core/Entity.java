@@ -1,6 +1,7 @@
 package core;
 
-import java.awt.*;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 public abstract class Entity implements GameEntity {
 

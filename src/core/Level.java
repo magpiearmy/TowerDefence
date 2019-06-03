@@ -6,7 +6,11 @@ import towers.TowerFactory;
 import towers.TowerType;
 import ui.UserInterface;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;

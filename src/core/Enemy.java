@@ -1,6 +1,9 @@
 package core;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Vector;
 
 @SuppressWarnings("serial") public class Enemy extends Entity implements ISelectable {
